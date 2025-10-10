@@ -1,2 +1,2 @@
 # Hospital-Management-System
-Flask based application for doctors, patients and appointments
+A flask based web-application that allows admins, doctors and patients to interact with the system based on their roles
