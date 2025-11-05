@@ -1,2 +1,2 @@
 # Hospital-Management-System
-A flask based web-application that allows admins, doctors and patients to interact with the system based on their respective roles.
+This project is a role-based hospital management web application developed using Flask. It provides an integrated platform for administrators, doctors, and patients to manage hospital operations efficiently. The system supports secure authentication, appointment management, and real-time communication tailored to each user’s role.
