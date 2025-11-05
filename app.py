@@ -54,7 +54,6 @@ class Treatment(db.Model):
     treatment_name = db.Column(db.String(100))
     treatment_description = db.Column(db.Text)
     treatment_cost =  db.Column(db.Float, nullable=False)  # Cost in INR
-
     appointments = db.relationship('Appointment', backref='treatment', lazy=True)
 
 
