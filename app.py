@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 app= Flask(__name__)
 
 #Database Configuration (using SQLite)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://hospital_data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hospital_data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
 
 #Initialize SQLAlchemy instance
@@ -20,7 +20,7 @@ class User(db.Model):
     user_name = db.Column(db.String(120), unique=True, nullable=False)
     email_address = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(100),nullable=False)
-    user_role = db.Column(db.String(60),nullabuse=False)
+    user_role = db.Column(db.String(60),nullable=False)
     joined_on = db.Column(db.DateTime, default=datetime.utcnow)
     #back reference to the department
     department = db.relationship('Department', back_populates='mumbers')
@@ -52,5 +52,5 @@ class Treatment(db.Model):
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create()
-    app.rum(debug=True)
+        db.create_all()
+    app.run(debug=True)
