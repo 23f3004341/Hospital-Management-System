@@ -19,7 +19,15 @@ class User(db.Model):
     department_ref = db.Column(db.Integer, db.ForeignKey('department_info.dept_id'), nullable=True)
     user_name = db.Column(db.String(120), unique=True, nullable=False)
     email_address = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String(100),nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    gender = db.Column(db.String(10), nullable = False)
+    dob = db.Column(db.DateTime, default = datetime.utcnow)
+    contact_number = db.Column(db.String(20), nullable = False)
+    address = db.Column(db.Text, nullable = False)
+    nationality = db.Column(db.String(100))
+    availability = db.Column(db.String(10)) #example: Yes, No
+    doctor_qualification = db.Column(db.String(150)) #example: MBBS, MS, MD, BAMS, BHMS, BDS
+    doctor_experience = db.Column(db.Integer, nullable = True)
     user_role = db.Column(db.String(60),nullable=False) # examples: admins, doctors, patients
     joined_on = db.Column(db.DateTime, default=datetime.utcnow)
     doctor_appointments = db.relationship('Appointment', foreign_keys='Appointment.doctor_id', back_populates='doctor')
@@ -52,7 +60,9 @@ class Treatment(db.Model):
     __tablename__ ="treatment_info"
     treatment_id = db.Column(db.Integer, primary_key=True)
     treatment_name = db.Column(db.String(100))
-    treatment_description = db.Column(db.Text)
+    treatment_diagnosis = db.Column(db.Text)
+    treatment_prescription = db.Column(db.Text)
+    notes = db.Column(db.Text)
     treatment_cost =  db.Column(db.Float, nullable=False)  # Cost in INR
     appointments = db.relationship('Appointment', backref='treatment', lazy=True)
 
