@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <div class="card mx-auto shadow-sm" style="max-width:1100px;">
+    <div class="card-body">
+      <h3 class="text-center mb-4">Add New Doctor</h3>
+
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="row g-3">
+          <!-- Name -->
+          <div class="col-md-4">
+            {{ form.first_name.label(class="form-label") }}
+            {{ form.first_name(class="form-control", placeholder="First name") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.middle_name.label(class="form-label") }}
+            {{ form.middle_name(class="form-control", placeholder="Middle name (optional)") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.last_name.label(class="form-label") }}
+            {{ form.last_name(class="form-control", placeholder="Last name") }}
+          </div>
+
+          <!-- Username and Email -->
+          <div class="col-md-6">
+            {{ form.user_name.label(class="form-label") }}
+            <div class="input-group">
+              {{ form.user_name(class="form-control", id="usernameField", placeholder="Optional; will be generated from name if left empty") }}
+              <button class="btn btn-outline-secondary" type="button" id="generateUsernameBtn" title="Generate username from name">⟳</button>
+            </div>
+            <div class="form-text">If empty, username will be generated automatically (first.last). Use the button to force-generate.</div>
+          </div>
+          <div class="col-md-6">
+            {{ form.email_address.label(class="form-label") }}
+            {{ form.email_address(class="form-control", placeholder="doctor@example.com") }}
+          </div>
+
+          <!-- Password with eye toggle -->
+          <div class="col-md-6 position-relative">
+            {{ form.password.label(class="form-label") }}
+            <div class="input-group">
+              {{ form.password(class="form-control", id="passwordField", placeholder="Set initial password") }}
+              <button class="btn btn-outline-secondary" type="button" id="togglePassword" tabindex="-1" aria-label="Toggle password visibility">👁</button>
+            </div>
+            <div class="form-text">Share this initial password with the doctor securely. They can change it later.</div>
+          </div>
+
+          <!-- Gender / DOB -->
+          <div class="col-md-3">
+            {{ form.gender.label(class="form-label") }}
+            {{ form.gender(class="form-select") }}
+          </div>
+          <div class="col-md-3">
+            {{ form.dob.label(class="form-label") }}
+            {{ form.dob(class="form-control", placeholder="YYYY-MM-DD") }}
+          </div>
+
+          <!-- Contact with country code -->
+          <div class="col-md-3">
+            {{ form.country_code.label(class="form-label") }}
+            {{ form.country_code(class="form-select") }}
+          </div>
+          <div class="col-md-9 col-lg-3">
+            {{ form.contact_number.label(class="form-label") }}
+            {{ form.contact_number(class="form-control", placeholder="e.g., 9876543210") }}
+          </div>
+
+          <!-- Address lines -->
+          <div class="col-md-12">
+            {{ form.address_line1.label(class="form-label") }}
+            {{ form.address_line1(class="form-control", placeholder="Address line 1") }}
+          </div>
+          <div class="col-md-12">
+            {{ form.address_line2.label(class="form-label") }}
+            {{ form.address_line2(class="form-control", placeholder="Address line 2 (optional)") }}
+          </div>
+
+          <!-- Pincode -> City/State/Country autofill -->
+          <div class="col-md-3">
+            {{ form.pincode.label(class="form-label") }}
+            {{ form.pincode(class="form-control", id="pincodeField", placeholder="Pincode / ZIP") }}
+          </div>
+          <div class="col-md-3">
+            {{ form.city.label(class="form-label") }}
+            {{ form.city(class="form-control", id="cityField", placeholder="City (autofill)") }}
+          </div>
+          <div class="col-md-3">
+            {{ form.state.label(class="form-label") }}
+            {{ form.state(class="form-control", id="stateField", placeholder="State (autofill)") }}
+          </div>
+          <div class="col-md-3">
+            {{ form.country.label(class="form-label") }}
+            {{ form.country(class="form-control", id="countryField", placeholder="Country (autofill)") }}
+          </div>
+
+          <!-- Department / Qualification / Experience -->
+          <div class="col-md-6">
+            {{ form.department_ref.label(class="form-label") }}
+            {{ form.department_ref(class="form-select") }}
+          </div>
+          <div class="col-md-3">
+            {{ form.qualification.label(class="form-label") }}
+            {{ form.qualification(class="form-select") }}
+          </div>
+          <div class="col-md-3">
+            {{ form.doctor_experience.label(class="form-label") }}
+            {{ form.doctor_experience(class="form-control", placeholder="Years of experience") }}
+          </div>
+
+          <!-- submit -->
+          <div class="col-12 text-center mt-3">
+            {{ form.submit(class="btn btn-success btn-lg") }}
+          </div>
+        </div>
+      </form>
+    </div> <!-- card-body -->
+  </div> <!-- card -->
+</div> <!-- container -->
+
+<!-- Scripts -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Password eye toggle
+  const pass = document.getElementById('passwordField');
+  const toggleBtn = document.getElementById('togglePassword');
+  if (pass && toggleBtn) {
+    toggleBtn.addEventListener('click', function () {
+      if (pass.type === 'password') {
+        pass.type = 'text';
+        toggleBtn.textContent = '🙈';
+      } else {
+        pass.type = 'password';
+        toggleBtn.textContent = '👁';
+      }
+    });
+  }
+
+  // Username generator (preview / quick generate)
+  const genBtn = document.getElementById('generateUsernameBtn');
+  const usernameField = document.getElementById('usernameField');
+  function generateUsername() {
+    const first = document.getElementById('{{ form.first_name.id }}')?.value.trim().toLowerCase() || '';
+    const last = document.getElementById('{{ form.last_name.id }}')?.value.trim().toLowerCase() || '';
+    const email = document.getElementById('{{ form.email_address.id }}')?.value.trim().toLowerCase() || '';
+    let candidate = '';
+    if (first && last) {
+      candidate = `${first}.${last}`;
+    } else if (first) {
+      candidate = first;
+    } else if (email) {
+      candidate = email.split('@')[0];
+    }
+    if (candidate && usernameField && !usernameField.value.trim()) {
+      usernameField.value = candidate;
+    }
+  }
+  if (genBtn) {
+    genBtn.addEventListener('click', generateUsername);
+  }
+  // Optionally live-generate as user types (non-destructive)
+  ['{{ form.first_name.id }}', '{{ form.last_name.id }}', '{{ form.email_address.id }}'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('blur', generateUsername);
+  });
+
+  // Pincode -> autofill (India example using "api.postalpincode.in")
+  const pincodeField = document.getElementById('pincodeField');
+  if (pincodeField) {
+    pincodeField.addEventListener('change', function () {
+      const pin = pincodeField.value.trim();
+      if (!pin) return;
+
+      const pinDigits = pin.replace(/\s+/g,'');
+      // basic check (3-8 digits) — adjust as needed
+      if (!/^\d{3,8}$/.test(pinDigits)) {
+        // invalid format; do nothing (or show a small warning)
+      }
+
+      // Postal pincode API for India
+      fetch(`https://api.postalpincode.in/pincode/${pinDigits}`)
+        .then(resp => resp.json())
+        .then(data => {
+          if (Array.isArray(data) && data[0] && data[0].Status === "Success" && data[0].PostOffice && data[0].PostOffice.length) {
+            const po = data[0].PostOffice[0];
+            const cityField = document.getElementById('cityField');
+            const stateField = document.getElementById('stateField');
+            const countryField = document.getElementById('countryField');
+
+            if (cityField) cityField.value = po.District || po.Block || '';
+            if (stateField) stateField.value = po.State || '';
+            if (countryField) countryField.value = po.Country || 'India';
+          } else {
+            // fallback: clear autofill fields (or keep existing)
+            console.warn('Pincode lookup returned no result', data);
+          }
+        })
+        .catch(err => {
+          console.warn('Pincode lookup error', err);
+        });
+    });
+  }
+
+  // small accessibility: press Enter on any input inside form will trigger submit by default
+});
+</script>
+{% endblock %}

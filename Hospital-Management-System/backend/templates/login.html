@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card shadow-sm p-4">
+      <h4 class="text-center mb-3">Login</h4>
+      <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="role">Login as</label>
+          <select class="form-select" name="role" id="role" required>
+            <option value="patient" selected>Patient</option>
+            <option value="doctor">Doctor</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" id="remember" name="remember">
+          <label class="form-check-label" for="remember">Remember me</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+
+      <p class="text-center mt-3">
+        New user? <a href="{{ url_for('main.register') }}">Register as Patient</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

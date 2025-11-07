@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-3 text-primary">Doctor Dashboard</h3>
+  <p class="lead">Welcome Dr. {{ current_user.user_name }}. Here you can manage your appointments and patient records.</p>
+
+  <hr>
+
+  <!-- Upcoming Appointments Section -->
+  <h4 class="text-success mt-4">Upcoming Appointments</h4>
+  {% if upcoming_appointments %}
+  <table class="table table-hover mt-3">
+    <thead class="table-primary">
+      <tr>
+        <th>Patient Name</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for appt in upcoming_appointments %}
+      <tr>
+        <td>{{ appt.patient.user_name }}</td>
+        <td>{{ appt.appointment_date }}</td>
+        <td>{{ appt.appointment_time }}</td>
+        <td>{{ appt.appointment_status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="alert alert-info">No upcoming appointments scheduled.</div>
+  {% endif %}
+
+  <!-- Assigned Patients Section -->
+  <h4 class="text-secondary mt-5">Your Patients</h4>
+  {% if assigned_patients %}
+  <ul class="list-group mt-3">
+    {% for patient in assigned_patients %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <strong>{{ patient.user_name }}</strong> — {{ patient.email_address }}<br>
+        <small>Contact: {{ patient.contact_number }}</small>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="alert alert-warning mt-3">You have no assigned patients yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

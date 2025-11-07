@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7">
+    <div class="card shadow-sm p-4">
+      <h4 class="text-center mb-4">Patient Registration</h4>
+      <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            {{ form.user_name.label }} {{ form.user_name(class="form-control") }}
+          </div>
+          <div class="col-md-6 mb-3">
+            {{ form.email_address.label }} {{ form.email_address(class="form-control") }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            {{ form.password.label }} {{ form.password(class="form-control") }}
+          </div>
+          <div class="col-md-6 mb-3">
+            {{ form.confirm_password.label }} {{ form.confirm_password(class="form-control") }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            {{ form.gender.label }} {{ form.gender(class="form-select") }}
+          </div>
+          <div class="col-md-6 mb-3">
+            {{ form.dob.label }} {{ form.dob(class="form-control") }}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.contact_number.label }} {{ form.contact_number(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+          {{ form.address.label }} {{ form.address(class="form-control", rows="2") }}
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">{{ form.submit.label }}</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-4">
+
+  <h2 class="mb-4 text-primary">Admin Dashboard</h2>
+  <p class="lead">Welcome, {{ current_user.user_name }} 👋</p>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold">Manage System Records</h5>
+    <a href="{{ url_for('main.add_doctor') }}" class="btn btn-success">➕ Add Doctor</a>
+  </div>
+
+  <!-- Doctors Section -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">👨‍⚕️ Registered Doctors</h5>
+    </div>
+    <div class="card-body">
+      {% if doctors %}
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Qualification</th>
+            <th>Experience (yrs)</th>
+            <th>Department</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for doctor in doctors %}
+          <tr>
+            <td>{{ doctor.user_name }}</td>
+            <td>{{ doctor.email_address }}</td>
+            <td>{{ doctor.doctor_qualification or '-' }}</td>
+            <td>{{ doctor.doctor_experience or 0 }}</td>
+            <td>
+              {% if doctor.department_ref %}
+                {{ doctor.department.department_name }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="text-muted">No doctors registered yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Patients Section -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-info text-white">
+      <h5 class="mb-0">🧑‍🤝‍🧑 Registered Patients</h5>
+    </div>
+    <div class="card-body">
+      {% if patients %}
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Gender</th>
+            <th>Contact</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for patient in patients %}
+          <tr>
+            <td>{{ patient.user_name }}</td>
+            <td>{{ patient.email_address }}</td>
+            <td>{{ patient.gender or '-' }}</td>
+            <td>{{ patient.contact_number or '-' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="text-muted">No patients registered yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Appointments Section -->
+  <div class="card shadow-sm mb-5">
+    <div class="card-header bg-secondary text-white">
+      <h5 class="mb-0">📅 Appointments</h5>
+    </div>
+    <div class="card-body">
+      {% if appointments %}
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for appt in appointments %}
+          <tr>
+            <td>{{ appt.patient.user_name }}</td>
+            <td>{{ appt.doctor.user_name }}</td>
+            <td>{{ appt.appointment_date.strftime("%Y-%m-%d") }}</td>
+            <td>{{ appt.status or 'Pending' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="text-muted">No appointments scheduled yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
