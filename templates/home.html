@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="text-center mt-5">
+    <h1 class="mb-3">Welcome to the Hospital Management System</h1>
+    <p class="lead mb-4">
+        Book appointments, manage patients, and oversee doctor schedules — all in one place.
+    </p>
+
+    {% if not current_user.is_authenticated %}
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('main.login') }}" class="btn btn-primary btn-lg">Login</a>
+            <a href="{{ url_for('main.register') }}" class="btn btn-success btn-lg">Register as Patient</a>
+
+        </div>
+    {% else %}
+        <a href="{{ url_for('main.dashboard_redirect') }}" class="btn btn-outline-primary btn-lg">Go to Dashboard</a>
+    {% endif %}
+</div>
+
+{% endblock %}
