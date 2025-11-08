@@ -1,12 +1,16 @@
-# Python caches
+# Python
 __pycache__/
 *.pyc
 
-# Virtualenv / IDE
-env/
-venv/
-.vscode/
-.idea/
+# SQLite database
+*.db
 
-# macOS
+# Flask environment
+.env
+instance/
+
+# VS Code
+.vscode/
+
+# Mac system files
 .DS_Store
