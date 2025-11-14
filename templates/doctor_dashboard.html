@@ -1,59 +1,212 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "doctor_base.html" %}
+{% block doctor_content %}
 
-<div class="container mt-4">
-    <h1 class="mb-3">Doctor Dashboard</h1>
-    <p class="lead">
-        Welcome Dr. {{ current_user.user_name }} 👨‍⚕️.  
-        Here you can manage your appointments and patient records.
-    </p>
+<style>
+/*Dashboard Styling*/
 
-    <hr>
+.dashboard-wrapper {
+  font-family: "Poppins", sans-serif;
+  animation: fadeIn 0.6s ease-in-out;
+}
 
-    <!-- Upcoming Appointments -->
-    <h3 class="mt-4 mb-3">Upcoming Appointments</h3>
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to   { width: 100% }
+}
+
+.card-stat {
+  flex: 1;
+  min-width: 240px;
+  border-radius: 16px;
+  padding: 18px 22px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+  transition: all 0.3s ease;
+}
+
+.card-stat:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.section-title {
+  font-weight: 600;
+  color: #1e9e61;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title i {
+  font-size: 1.4rem;
+  color: #1e9e61;
+}
+
+.modern-table {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+}
+
+.modern-table thead {
+  background: #d8f5e2;
+  color: #136b42;
+  font-weight: 600;
+}
+
+.modern-table tbody tr {
+  transition: background 0.2s;
+}
+
+.modern-table tbody tr:hover {
+  background: #f4fff8;
+}
+
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.badge-booked {
+  background: #fff3cd;
+  color: #8a6d1c;
+}
+
+.badge-cancelled {
+  background: #fde2e2;
+  color: #bb2d3b;
+}
+
+.badge-completed {
+  background: #d1f7df;
+  color: #0c8a42;
+}
+
+.placeholder {
+  color: #b0b0b0;
+  font-style: italic;
+}
+
+.divider {
+  height: 2px;
+  background: linear-gradient(90deg, #c3f7d7, #eafff3, #c3f7d7);
+  margin: 2.5rem 0 1.5rem;
+  border-radius: 4px;
+}
+
+.content-section {
+  background: white;
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 4px 22px rgba(0,0,0,0.03);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+</style>
+
+
+
+<div class="p-4 dashboard-wrapper">
+
+  <h2 class="fw-bold text-success"
+      style="overflow:hidden; white-space:nowrap; width:0; animation:typing 1.8s steps(25,end) forwards;">
+      Welcome, Dr. {{ current_user.first_name }}
+  </h2>
+  <p class="text-secondary mb-4">Here’s a quick overview of your daily workflow.</p>
+
+  <div class="d-flex flex-wrap justify-content-between" style="gap: 1rem; margin-bottom: 2rem;">
+    
+    <div class="card-stat" style="background: linear-gradient(135deg, #e7f4ff, #f8fbff); color:#005099;">
+      <h6>Today's Appointments</h6>
+      <h3 class="fw-bold">{{ todays_count }}</h3>
+    </div>
+
+    <div class="card-stat" style="background: linear-gradient(135deg, #e8fdf2, #f9fffb); color:#0a6d43;">
+      <h6>This Week</h6>
+      <h3 class="fw-bold">{{ week_count }}</h3>
+    </div>
+
+    <div class="card-stat" style="background: linear-gradient(135deg, #fff4e0, #fff9f0); color:#9b4c00;">
+      <h6>Assigned Patients</h6>
+      <h3 class="fw-bold">{{ assigned_patients | length }}</h3>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!--Upcoming Appointments-->
+  <div class="content-section">
+
+    <div class="section-title">
+      <i class="bi bi-calendar2-week"></i>
+      Upcoming Appointments (Next 7 days)
+    </div>
+
     {% if upcoming_appointments %}
-        <div class="table-responsive">
-            <table class="table table-bordered align-middle">
-                <thead class="table-primary">
-                    <tr>
-                        <th>Patient Name</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for appt in upcoming_appointments %}
-                        <tr>
-                            <td>{{ appt.patient.user_name }}</td>
-                            <td>{{ appt.appointment_date }}</td>
-                            <td>{{ appt.appointment_time }}</td>
-                            <td>{{ appt.appointment_status }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <table class="table modern-table align-middle text-center">
+
+      <thead>
+        <tr>
+          <th>Patient</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        {% for appt in upcoming_appointments %}
+        <tr>
+
+          <td class="fw-semibold">
+            {% if appt.patient %}
+              {{ appt.patient.first_name }} {{ appt.patient.last_name or '' }}
+            {% else %}
+              <span class="placeholder">—</span>
+            {% endif %}
+          </td>
+
+          <td>{{ appt.appointment_date.strftime('%d %b %Y') }}</td>
+
+          <td>{{ appt.appointment_time }}</td>
+
+          <td>
+            {% if appt.appointment_status == "Booked" %}
+              <span class="status-badge badge-booked">Booked</span>
+
+            {% elif appt.appointment_status == "Cancelled" %}
+              <span class="status-badge badge-cancelled">Cancelled</span>
+
+            {% elif appt.appointment_status == "Completed" %}
+              <span class="status-badge badge-completed">Completed</span>
+            {% endif %}
+          </td>
+
+        </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+
     {% else %}
-        <div class="alert alert-info">No upcoming appointments scheduled.</div>
+      <div class="alert alert-secondary text-center mt-3">
+        No upcoming appointments found.
+      </div>
     {% endif %}
 
-    <!-- Assigned Patients -->
-    <h3 class="mt-5 mb-3">Your Patients</h3>
-    {% if assigned_patients %}
-        <div class="list-group">
-            {% for patient in assigned_patients %}
-                <div class="list-group-item">
-                    <h5 class="mb-1">{{ patient.user_name }}</h5>
-                    <p class="mb-1">{{ patient.email_address }}</p>
-                    <small>📞 {{ patient.contact_number }}</small>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="alert alert-secondary">You have no assigned patients yet.</div>
-    {% endif %}
+  </div>
+
 </div>
 
 {% endblock %}
