@@ -1,0 +1,136 @@
+{% extends "patient_base.html" %}
+{% block patient_content %}
+
+<div class="container py-4" style="font-family:'Poppins', sans-serif;">
+  
+  <!-- Doctor Profile -->
+  <div class="card shadow-sm border-0 mb-4"
+       style="border-radius:16px;background:linear-gradient(180deg,#f8fdf9,#ffffff);">
+    <div class="card-body d-flex align-items-center">
+
+      <!-- Doctor Image -->
+      <img src="{{ url_for('static', filename='images/default_doctor.png') }}" 
+           width="100" height="100" class="rounded-circle me-4 shadow-sm">
+
+      <div>
+
+        <!-- Name -->
+        <h4 class="fw-bold text-success mb-1">
+          Dr. {{ doctor.first_name }} {{ doctor.last_name or '' }}
+        </h4>
+
+        <!-- Department -->
+        <p class="text-muted mb-1">
+          {{ doctor.department.dept_name if doctor.department else "General Medicine" }}
+        </p>
+
+        <!-- Qualification -->
+        <p class="mb-0"><strong>Qualification:</strong> {{ doctor.doctor_qualification or "MBBS" }}</p>
+
+        <!-- Experience -->
+        <p class="mb-0"><strong>Experience:</strong> {{ doctor.doctor_experience or "—" }} years</p>
+
+        <!-- Email -->
+        <p class="mb-0"><strong>Email:</strong> {{ doctor.email_address or "—" }}</p>
+
+        <!-- Contact -->
+        <p class="mb-0"><strong>Contact:</strong> {{ doctor.contact_number or "—" }}</p>
+
+        <!-- Address -->
+        <p class="mb-0">
+          <strong>Address:</strong>
+          {% if doctor.address %}
+            {{ doctor.address }}
+          {% elif doctor.city or doctor.state %}
+            {{ doctor.city or '' }}{% if doctor.city and doctor.state %}, {% endif %}{{ doctor.state or '' }}
+          {% else %}
+            —
+          {% endif %}
+        </p>
+
+        {% if doctor.bio %}
+        <p class="mt-2 small text-muted">{{ doctor.bio }}</p>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  <!--Weekly Availability-->
+  <div class="card shadow-sm border-0" style="border-radius:16px;">
+    <div class="card-body">
+      <h5 class="fw-bold text-success mb-3">Weekly Availability (Next 7 Days)</h5>
+
+      <table class="table text-center align-middle" 
+             style="border-collapse:separate;border-spacing:0 10px;">
+        <thead class="table-success text-success">
+          <tr>
+            <th>Date</th>
+            <th>Day</th>
+            <th>Slots (30 mins)</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for day in next_7_days %}
+          {% set slots = final_schedule.get(day.date) %}
+          
+          <tr style="background:#ffffff;box-shadow:0 2px 6px rgba(0,0,0,0.05);">
+            <td>{{ day.date }}</td>
+            <td>{{ day.weekday }}</td>
+
+            <td>
+              {% if slots and slots|length > 0 %}
+                {% for s in slots %}
+                  
+                  {% if s.is_booked %}
+                    <button class="btn btn-sm btn-secondary mb-1" disabled>
+                      {{ s.start }} – {{ s.end }}
+                    </button>
+                  
+                  {% else %}
+                    <form method="POST" action="{{ url_for('main.patient_book', doctor_id=doctor.user_id) }}" class="d-inline-block">
+                      <input type="hidden" name="appointment_date" value="{{ day.date }}">
+                      <input type="hidden" name="appointment_time" value="{{ s.start }}">
+                      <button class="btn btn-success btn-sm mb-1"
+                              style="border-radius:8px;background:#0b8a54;border:none;">
+                        {{ s.start }} – {{ s.end }}
+                      </button>
+                    </form>
+                  {% endif %}
+
+                {% endfor %}
+              {% else %}
+                <span class="badge bg-danger">Unavailable</span>
+              {% endif %}
+            </td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <!--Back Button-->
+  <div class="text-start mt-3">
+    <a href="{{ url_for('main.patient_book_page') }}" 
+       class="btn btn-outline-success fw-semibold" 
+       style="border-radius:10px;">
+      ← Back to Doctors
+    </a>
+  </div>
+</div>
+
+<style>
+  table tbody tr:hover {
+    background-color: #f4fff9;
+    transition: background-color 0.2s ease;
+  }
+  .btn-success:hover {
+    background-color: #099e63 !important;
+  }
+</style>
+
+{% endblock %}

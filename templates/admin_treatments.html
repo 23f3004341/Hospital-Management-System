@@ -1,0 +1,82 @@
+{% extends "admin_base.html" %}
+{% block content %}
+
+<div class="container py-4" style="font-family:'Poppins', sans-serif;">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold" style="color:#3a2d7d;">Treatments Overview</h3>
+      <p class="text-muted mb-0">All treatments recorded across doctors and patients in MediLife.</p>
+    </div>
+    <div class="bg-light px-3 py-2 rounded-3 shadow-sm small">
+      <i class="bi bi-clipboard2-pulse text-success me-2"></i>
+      <strong>{{ treatments|length }}</strong> total records
+    </div>
+  </div>
+
+  {% if treatments %}
+  <div class="card shadow-sm border-0" style="border-radius:14px;">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead style="background:linear-gradient(90deg,#f3f0ff,#f9f9ff);color:#3a2d7d;">
+            <tr>
+              <th class="ps-4">#</th>
+              <th>Treatment Name</th>
+              <th>Diagnosis</th>
+              <th>Prescription</th>
+              <th>Doctor</th>
+              <th>Patient</th>
+              <th>Date Added</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in treatments %}
+            <tr class="align-top hover-row" style="transition:background 0.2s ease;">
+              <td class="ps-4 fw-semibold text-muted">{{ loop.index }}</td>
+              <td class="fw-semibold text-dark">{{ t.treatment_name or "—" }}</td>
+              <td style="max-width:300px;" class="small text-muted">{{ t.diagnosis or "—" }}</td>
+              <td style="max-width:300px;" class="small">{{ t.prescription or "—" }}</td>
+              <td class="fw-semibold text-primary">
+                {{ t.doctor.first_name if t.doctor else "—" }}
+                {{ t.doctor.last_name if t.doctor else "" }}
+              </td>
+              <td class="fw-semibold text-success">
+                {{ t.patient.first_name if t.patient else "—" }}
+                {{ t.patient.last_name if t.patient else "" }}
+              </td>
+              <td class="text-secondary small pe-4">
+                {{ t.created_on.strftime("%d %b %Y, %I:%M %p") if t.created_on else "—" }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="alert alert-info text-center mt-5 py-4 shadow-sm" style="border-radius:10px;">
+    <h5 class="fw-bold mb-1 text-primary">No treatment records yet</h5>
+    <p class="mb-0 text-muted small">Treatments will appear here once doctors record them.</p>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .hover-row:hover {
+    background-color: #f8f6ff !important;
+    transform: scale(1.01);
+  }
+  th {
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+  }
+  td {
+    vertical-align: middle;
+  }
+</style>
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "patient_base.html" %}
+{% block patient_content %}
+
+<div class="container py-5">
+  <div class="card shadow-sm p-4" style="border-radius: 16px; background: #fff;">
+    
+    <div class="d-flex justify-content-between align-items-center">
+      <h4 class="fw-bold mb-3" style="color: #6a4fb6;">Your Profile</h4>
+
+      <a href="{{ url_for('main.patient_edit_profile') }}" class="btn btn-primary">
+        Edit Profile
+      </a>
+    </div>
+
+    <hr>
+
+    <!-- Personal Info -->
+    <div class="row mb-3">
+      <div class="col-md-6"><strong>Name:</strong> {{ patient.first_name }} {{ patient.last_name }}</div>
+      <div class="col-md-6"><strong>Email:</strong> {{ patient.email_address }}</div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6"><strong>Gender:</strong> {{ patient.gender or '—' }}</div>
+      <div class="col-md-6"><strong>Date of Birth:</strong> 
+        {{ patient.dob.strftime('%d %b %Y') if patient.dob else '—' }}
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6"><strong>Contact:</strong> {{ patient.contact_number or '—' }}</div>
+      <div class="col-md-6"><strong>Nationality:</strong> {{ patient.nationality or '—' }}</div>
+    </div>
+
+    <hr>
+
+    <!-- Physical Details -->
+    <h6 class="fw-bold" style="color:#6a4fb6;">Physical Details</h6>
+    <div class="row mb-3">
+      <div class="col-md-6"><strong>Height:</strong> {{ patient.height or '—' }} cm</div>
+      <div class="col-md-6"><strong>Weight:</strong> {{ patient.weight or '—' }} kg</div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6"><strong>Marital Status:</strong> {{ patient.marital_status or '—' }}</div>
+      <div class="col-md-6"><strong>Medications:</strong> {{ patient.medications or '—' }}</div>
+    </div>
+
+    <hr>
+
+    <!-- Address details -->
+    <h6 class="fw-bold" style="color:#6a4fb6;">Address</h6>
+    <div class="row mb-3">
+      <div class="col-md-12"><strong>Address Line 1:</strong> {{ patient.address or '—' }}</div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-12"><strong>Address Line 2:</strong> {{ patient.address_line2 or '—' }}</div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-4"><strong>City:</strong> {{ patient.city or '—' }}</div>
+      <div class="col-md-4"><strong>State:</strong> {{ patient.state or '—' }}</div>
+      <div class="col-md-4"><strong>Country:</strong> {{ patient.country or '—' }}</div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-4"><strong>Pincode:</strong> {{ patient.pincode or '—' }}</div>
+    </div>
+
+    <hr>
+
+    <!-- Emergency Cont -->
+    <h6 class="fw-bold" style="color:#6a4fb6;">Emergency Contact</h6>
+    <div class="row mb-3">
+      <div class="col-md-4"><strong>Name:</strong> {{ patient.emergency_name or '—' }}</div>
+      <div class="col-md-4"><strong>Relation:</strong> {{ patient.emergency_relation or '—' }}</div>
+      <div class="col-md-4"><strong>Contact:</strong> {{ patient.emergency_contact or '—' }}</div>
+    </div>
+
+    <hr>
+
+    <!-- Back button -->
+    <div class="text-center mt-4">
+      <a href="{{ url_for('main.patient_dashboard') }}" class="btn btn-outline-secondary">
+        ← Back to Dashboard
+      </a>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

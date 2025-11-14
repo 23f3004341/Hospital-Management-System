@@ -1,0 +1,205 @@
+{% extends "doctor_base.html" %}
+{% block doctor_content %}
+
+<style>
+.appointments-container {
+    font-family: 'Poppins', sans-serif;
+    padding: 35px 25px;
+    animation: fadeIn 0.7s ease-in-out;
+}
+
+.appointments-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #167d53;
+    margin-bottom: 5px;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sub-text {
+    color: #6b7280;
+    margin-bottom: 25px;
+    font-size: 1rem;
+}
+
+.filter-buttons {
+    margin-bottom: 25px;
+}
+
+.filter-buttons .btn {
+    border-radius: 10px;
+    padding: 6px 14px;
+    font-weight: 500;
+    border: none;
+    transition: 0.25s ease-in-out;
+}
+
+.filter-buttons .btn-active {
+    background: linear-gradient(135deg, #8ef2c0, #c8ffe2);
+    color: #165b44;
+    font-weight: 600;
+}
+
+.filter-buttons .btn:hover {
+    background: #eafaf3;
+    color: #12784f;
+}
+
+.table-wrapper {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+    animation: slideUp 0.6s ease;
+}
+
+.table thead {
+    background: #d4f7e8;
+    color: #166e52;
+}
+
+.table th {
+    padding: 12px;
+    font-size: 0.9rem;
+}
+
+.table td {
+    padding: 14px 10px;
+}
+
+.table tbody tr:hover {
+    background: #f3fdf8;
+}
+
+.badge-status {
+    padding: 8px 14px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.bg-booked { background: #ffe8a3; color: #7a5c00; }
+.bg-completed { background: #c5f7d2; color: #1b7f3b; }
+.bg-cancelled { background: #ffd1d1; color: #8a1a1a; }
+
+/* Add Treatment and Cancel Buttons */
+.btn-treat {
+    background: #e3f4ff;
+    color: #0b63a8;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-treat:hover {
+    background: #cfeaff;
+}
+
+.btn-cancel {
+    background: #ffd8d8;
+    color: #a02222;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-weight: 600;
+    transition: 0.2s;
+    border: none;
+}
+
+.btn-cancel:hover {
+    background: #ffbcbc;
+}
+
+
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+@keyframes slideUp { from { transform: translateY(10px); opacity:0;} to { transform: translateY(0); opacity:1;} }
+</style>
+
+
+<div class="appointments-container">
+
+    <h2 class="appointments-title">
+        <i class="bi bi-calendar-week"></i> Appointments
+    </h2>
+    <p class="sub-text">Manage and update the status of your appointments.</p>
+
+    <div class="filter-buttons">
+        <a href="{{ url_for('main.doctor_appointments', filter='today') }}"
+           class="btn {% if current_filter=='today' %}btn-active{% endif %}">Today</a>
+
+        <a href="{{ url_for('main.doctor_appointments', filter='upcoming') }}"
+           class="btn {% if current_filter=='upcoming' %}btn-active{% endif %}">Upcoming</a>
+
+        <a href="{{ url_for('main.doctor_appointments', filter='past') }}"
+           class="btn {% if current_filter=='past' %}btn-active{% endif %}">Past</a>
+
+        <a href="{{ url_for('main.doctor_appointments', filter='all') }}"
+           class="btn {% if current_filter=='all' %}btn-active{% endif %}">All</a>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="table table-hover align-middle text-center">
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for appt in appointments %}
+                <tr>
+
+                    <td class="fw-semibold">
+                        {% if appt.patient %}
+                            {{ appt.patient.first_name }} {{ appt.patient.last_name or '' }}
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ appt.appointment_date.strftime('%d %b %Y') }}</td>
+
+                    <td>{{ appt.appointment_time }}</td>
+
+                    <td>
+                        {% if appt.appointment_status == "Booked" %}
+                            <span class="badge-status bg-booked">Booked</span>
+                        {% elif appt.appointment_status == "Completed" %}
+                            <span class="badge-status bg-completed">Completed</span>
+                        {% elif appt.appointment_status == "Cancelled" %}
+                            <span class="badge-status bg-cancelled">Cancelled</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if appt.patient and appt.appointment_status in ['Booked', 'Confirmed'] %}
+                            <a href="{{ url_for('main.doctor_patient_profile', patient_id=appt.patient_id) }}"
+                               class="btn-treat">Add Treatment</a>
+
+                            <form method="POST" action="{{ url_for('main.doctor_manage_appointment', appointment_id=appt.appointment_id) }}"
+                                  class="d-inline">
+                                <input type="hidden" name="action" value="cancel">
+                                <button class="btn-cancel">Cancel</button>
+                            </form>
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

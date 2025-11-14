@@ -1,0 +1,385 @@
+{% extends "doctor_base.html" %}
+{% block doctor_content %}
+
+<style>
+.fadeIn {
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.patient-header {
+  background: linear-gradient(135deg, #e8fff2, #f6fffb);
+  border-radius: 18px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+.patient-avatar {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background: #dfffe9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  color: #1c8a58;
+  font-weight: 700;
+}
+
+.patient-info h3 {
+  font-weight: 700;
+  color: #178d55;
+}
+
+.patient-info p {
+  margin: 2px 0;
+  color: #6b7b87;
+}
+
+.details-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+  margin-bottom: 30px;
+}
+
+.details-card h5 {
+  font-weight: 700;
+  color: #178d55;
+}
+
+.details-card p {
+  margin-bottom: 6px;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1e8d62;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title i {
+  font-size: 1.45rem;
+}
+
+.modern-table {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+}
+
+.modern-table thead {
+  background: #dff9ea;
+  color: #116f42;
+  font-weight: 600;
+}
+
+.modern-table tbody tr:hover {
+  background: #f4fff8;
+  transition: 0.25s ease;
+}
+
+.badge-status {
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.st-booked { background:#fff1c4; color:#9c7a00; }
+.st-cancelled { background:#ffe0e0; color:#be2f39; }
+.st-completed { background:#d8fbe5; color:#0c8842; }
+
+/*Treatment Card*/
+.treatment-card {
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f2fff7, #eafff4);
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+  transition: transform .2s ease;
+}
+
+.treatment-card:hover {
+  transform: translateY(-4px);
+}
+
+/*Add Treatment Form*/
+.add-treatment-box {
+  background: white;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.06);
+}
+
+.add-treatment-box label {
+  font-weight: 600;
+  color: #1a7b4d;
+}
+
+.add-treatment-btn {
+  background: linear-gradient(90deg, #34d399, #059669);
+  border: none;
+  padding: 10px 26px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.add-treatment-btn:hover {
+  background: linear-gradient(90deg, #059669, #34d399);
+}
+
+/*Mark Completed*/
+.complete-card {
+  background: linear-gradient(135deg, #e7fdf3, #f4fffb);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 22px rgba(0,0,0,0.06);
+  margin-bottom: 25px;
+}
+
+.complete-btn {
+  background: #16a34a;
+  border: none;
+  padding: 10px 24px;
+  color: white;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.complete-btn:hover {
+  background: #12833c;
+}
+
+.disabled-btn {
+  background: #cbd5e1;
+  border: none;
+  padding: 10px 24px;
+  color: #475569;
+  border-radius: 10px;
+  font-weight: 600;
+}
+</style>
+
+
+<div class="p-4 fadeIn">
+
+  <div class="patient-header fadeIn mb-4">
+    
+    <div class="d-flex align-items-center gap-4">
+      <div class="patient-avatar">
+        {{ patient.first_name[0] }}
+      </div>
+
+      <div class="patient-info">
+        <h3>{{ patient.first_name }} {{ patient.last_name or '' }}</h3>
+        <p><i class="bi bi-envelope"></i> {{ patient.email_address }}</p>
+        <p><i class="bi bi-telephone"></i> {{ patient.contact_number or '—' }}</p>
+      </div>
+    </div>
+
+    <div class="text-end">
+      <span class="badge bg-success bg-opacity-25 text-success px-3 py-2 fw-semibold" style="border-radius:8px;">
+        Patient ID: {{ patient.user_id }}
+      </span>
+      <p class="text-muted mt-2 small">
+        <i class="bi bi-gender-ambiguous"></i> {{ patient.gender or 'Not Specified' }} <br>
+        <i class="bi bi-geo-alt"></i> {{ patient.city or 'Unknown' }}, {{ patient.state or '' }}
+      </p>
+    </div>
+  </div>
+
+  <!--Patient Details-->
+  <div class="details-card fadeIn">
+    <h5 class="mb-3">Patient Details</h5>
+
+    <div class="row">
+      <div class="col-md-4">
+        <p><strong>DOB:</strong> {{ patient.dob.strftime('%d %b %Y') if patient.dob else '—' }}</p>
+        <p><strong>Height:</strong> {{ patient.height or '—' }} cm</p>
+        <p><strong>Weight:</strong> {{ patient.weight or '—' }} kg</p>
+      </div>
+
+      <div class="col-md-4">
+        <p><strong>Marital Status:</strong> {{ patient.marital_status or '—' }}</p>
+        <p><strong>Currently Medication:</strong> {{ patient.medications or '—' }}</p>
+        <p><strong>Emergency Contact:</strong> {{ patient.emergency_contact or '—' }}</p>
+      </div>
+
+      <div class="col-md-4">
+        <p><strong>Emergency Name:</strong> {{ patient.emergency_name or '—' }}</p>
+        <p><strong>Emergency Relation:</strong> {{ patient.emergency_relation or '—' }}</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <p><strong>Address Line 1:</strong> {{ patient.address or '—' }}</p>
+    <p><strong>Address Line 2:</strong> {{ patient.address_line2 or '—' }}</p>
+    <p><strong>City:</strong> {{ patient.city or '—' }}</p>
+    <p><strong>State:</strong> {{ patient.state or '—' }}</p>
+    <p><strong>Country:</strong> {{ patient.country or '—' }}</p>
+    <p><strong>PIN Code:</strong> {{ patient.pincode or '—' }}</p>
+    <p><strong>Nationality:</strong> {{ patient.nationality or '—' }}</p>
+
+  </div>
+
+
+  <!--Mark Complete-->
+  {% if next_active_appointment %}
+  <div class="complete-card fadeIn">
+
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="text-success fw-bold mb-0">
+        Upcoming Appointment – {{ next_active_appointment.appointment_date.strftime('%d %b %Y') }}
+      </h5>
+
+      <form method="POST"
+            action="{{ url_for('main.doctor_manage_appointment', appointment_id=next_active_appointment.appointment_id) }}">
+        <input type="hidden" name="action" value="complete">
+
+        {% if next_active_appointment.treatment_id %}
+        <button class="complete-btn">Mark Appointment Completed</button>
+        {% else %}
+        <button class="disabled-btn" disabled>Add Treatment to Complete</button>
+        {% endif %}
+      </form>
+    </div>
+
+  </div>
+  {% endif %}
+
+
+  <!--Appointment History-->
+  <div class="mb-5 fadeIn">
+    <div class="section-title">
+      <i class="bi bi-clock-history"></i> Appointment History
+    </div>
+
+    {% if appointments %}
+    <table class="table modern-table text-center align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in appointments %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ a.appointment_date.strftime('%d %b %Y') }}</td>
+          <td>{{ a.appointment_time }}</td>
+          <td>
+            {% if a.appointment_status == "Booked" %}
+            <span class="badge-status st-booked">Booked</span>
+            {% elif a.appointment_status == "Completed" %}
+            <span class="badge-status st-completed">Completed</span>
+            {% else %}
+            <span class="badge-status st-cancelled">Cancelled</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-secondary text-center">No appointment records found.</div>
+    {% endif %}
+  </div>
+
+
+  <!--Treatment Records-->
+  <div class="mb-5 fadeIn">
+    <div class="section-title">
+      <i class="bi bi-capsule"></i> Treatment Records
+    </div>
+
+    {% if treatments %}
+      {% for t in treatments %}
+      <div class="treatment-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="fw-bold text-success">{{ t.treatment_name }}</h5>
+          <small class="text-muted">
+            <i class="bi bi-calendar3"></i> {{ t.created_on.strftime('%d %b %Y') }}
+          </small>
+        </div>
+
+        <hr>
+
+        <p><strong>Diagnosis:</strong> {{ t.diagnosis }}</p>
+        <p><strong>Prescription:</strong> {{ t.prescription or 'No prescription provided.' }}</p>
+        <p><strong>Doctor Notes:</strong> {{ t.doctor_notes or '—' }}</p>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="alert alert-secondary text-center">
+        No treatment records available.
+      </div>
+    {% endif %}
+  </div>
+
+
+  <!--Add Treatment-->
+  <div class="add-treatment-box fadeIn">
+    <div class="section-title">
+      <i class="bi bi-plus-circle"></i> Add New Treatment
+    </div>
+
+    <form method="POST" action="{{ url_for('main.add_treatment_for_patient', patient_id=patient.user_id) }}">
+
+      {% if next_active_appointment %}
+      <input type="hidden" name="appointment_id" value="{{ next_active_appointment.appointment_id }}">
+      {% endif %}
+
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label>Treatment Name</label>
+          <input type="text" class="form-control" name="treatment_name" required>
+        </div>
+
+        <div class="col-md-6">
+          <label>Diagnosis</label>
+          <input type="text" class="form-control" name="diagnosis" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label>Prescription</label>
+        <textarea class="form-control" name="prescription" rows="2"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label>Doctor Notes</label>
+        <textarea class="form-control" name="notes" rows="2"></textarea>
+      </div>
+
+      <button type="submit" class="add-treatment-btn">
+        Save Treatment
+      </button>
+    </form>
+  </div>
+
+</div>
+
+{% endblock %}

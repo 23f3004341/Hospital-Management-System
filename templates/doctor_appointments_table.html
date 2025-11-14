@@ -1,0 +1,115 @@
+<div class="table-responsive">
+
+  <table class="table align-middle mb-0"
+         style="border-radius:14px; overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,0.05);">
+
+    <thead style="background:#e8fdf2;">
+      <tr>
+        <th class="py-3 fw-semibold text-success">Patient</th>
+        <th class="py-3 fw-semibold text-success">Date</th>
+        <th class="py-3 fw-semibold text-success">Time</th>
+        <th class="py-3 fw-semibold text-success">Status</th>
+        <th class="py-3 fw-semibold text-success">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody style="background:white;">
+      {% if appointments %}
+
+        {% for appt in appointments %}
+        <tr class="table-row-hover">
+
+          <!--Patient-->
+          <td class="py-3">
+            <span class="fw-semibold text-dark">{{ appt.patient.first_name }}</span>
+          </td>
+
+          <!--Date-->
+          <td>
+            {% if appt.appointment_date.__class__.__name__ in ['date','datetime'] %}
+              {{ appt.appointment_date.strftime('%d %b %Y') }}
+            {% else %}
+              {{ appt.appointment_date[:10] }}
+            {% endif %}
+          </td>
+
+          <!--Time-->
+          <td>
+            {% if appt.appointment_time %}
+              {% if appt.appointment_time.__class__.__name__ == 'time' %}
+                {{ appt.appointment_time.strftime('%I:%M %p') }}
+              {% else %}
+                {{ appt.appointment_time }}
+              {% endif %}
+            {% else %}
+              —
+            {% endif %}
+          </td>
+
+          <!--Status-->
+          <td>
+            {% if appt.appointment_status == 'Completed' %}
+              <span class="badge bg-success px-3 py-2">Completed</span>
+
+            {% elif appt.appointment_status == 'Cancelled' %}
+              <span class="badge bg-danger px-3 py-2">Cancelled</span>
+
+            {% elif appt.appointment_status in ['Booked','Confirmed'] %}
+              <span class="badge bg-warning text-dark px-3 py-2">{{ appt.appointment_status }}</span>
+
+            {% else %}
+              <span class="badge bg-secondary px-3 py-2">{{ appt.appointment_status }}</span>
+            {% endif %}
+          </td>
+
+          <!--Actions-->
+          <td class="py-3">
+            {% if appt.appointment_status not in ['Completed','Cancelled'] %}
+
+              <!--Add Treatment-->
+              <a href="{{ url_for('main.doctor_patient_profile', patient_id=appt.patient_id) }}?appointment_id={{ appt.appointment_id }}"
+                 class="btn btn-outline-primary btn-sm px-3 me-2"
+                 style="border-radius:8px;">
+                 Add Treatment
+              </a>
+
+              <!--Cancel-->
+              <form method="POST" action="{{ url_for('main.doctor_manage_appointment', appointment_id=appt.appointment_id) }}"
+                    style="display:inline-block;">
+                <input type="hidden" name="action" value="cancel">
+                <button class="btn btn-outline-danger btn-sm px-3" style="border-radius:8px;">
+                  Cancel
+                </button>
+              </form>
+
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+
+        </tr>
+        {% endfor %}
+
+      {% else %}
+        <tr>
+          <td colspan="5" class="py-4 text-center text-secondary">
+            No appointments found.
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+
+  </table>
+</div>
+
+
+<style>
+  .table-row-hover:hover {
+    background: #f6fff9 !important;
+  }
+
+  .table thead th {
+    font-size: 0.9rem;
+    letter-spacing: .3px;
+  }
+</style>

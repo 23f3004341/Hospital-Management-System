@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex" style="font-family:'Poppins',sans-serif;background:#fcfdfc;color:#1c1c1c;">
+  
+  <!--Sidebar-->
+  <div class="sidebar p-3" style="
+      width:240px;
+      height:100vh;
+      background:linear-gradient(180deg,#f3fdf7,#e8f9ef);
+      border-right:1px solid #dfeee4;
+      box-shadow:2px 0 8px rgba(0,0,0,0.04);
+      position:fixed;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      transition:all 0.3s ease;
+  ">
+    
+    <div>
+      <h4 class="fw-bold text-center mb-4" style="color:#0b8457;">🌿 MediLife Doctor</h4>
+
+      <ul class="nav flex-column" style="list-style:none;padding-left:0;margin:0;">
+        {% set items = [
+          ('Dashboard','doctor_dashboard'),
+          ('Appointments','doctor_appointments'),
+          ('Patients','doctor_patients'),
+          ('Availability','doctor_availability'),
+          ('My Profile','doctor_profile')
+        ] %}
+
+        {% for label, endpoint in items %}
+          {% set url = url_for('main.' + endpoint) %}
+          <li class="mb-2">
+            <a href="{{ url }}"
+               class="nav-link d-block fw-semibold {% if active == endpoint %}active{% endif %}">
+              {{ label }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!--Logout Button-->
+    <div class="text-center" style="margin-bottom:25px;">
+      <a href="{{ url_for('main.logout') }}"
+         class="btn fw-semibold w-100 logout-btn">
+         🚪 Logout
+      </a>
+    </div>
+  </div>
+
+  <!--Main Content-->
+  <div class="content flex-grow-1" style="margin-left:240px;padding:2rem;">
+    {% block doctor_content %}{% endblock %}
+  </div>
+</div>
+
+<style>
+  .nav-link {
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: #0b8457;
+    background-color: transparent;
+    transition: all 0.25s ease;
+    display: block;
+  }
+
+  .nav-link.active {
+    background-color: #0b8457 !important;
+    color: #fff !important;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(11,132,87,0.15);
+  }
+
+  .nav-link:hover {
+    background-color: #dff7e7 !important;
+    color: #0b8457 !important;
+    transform: translateX(5px);
+  }
+
+  .logout-btn {
+    border-radius: 10px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 0;
+    transition: all 0.25s ease;
+  }
+
+  .logout-btn:hover {
+    background: #bb2d3b;
+  }
+</style>
+
+{% endblock %}

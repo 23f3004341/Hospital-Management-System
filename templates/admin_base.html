@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MediLife Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+    rel="stylesheet"
+  >
+  <style>
+    /* Global Reset */
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #eaf3ff, #f6faff);
+      color: #1e293b;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* Layout */
+    .wrapper {
+      display: flex;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 230px;
+      background: linear-gradient(180deg, #e3f2fd, #eaf3ff);
+      border-right: 1px solid #dbeafe;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 0;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar h3 {
+      text-align: center;
+      color: #0d47a1;
+      font-weight: 700;
+      margin-bottom: 25px;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-links {
+      flex-grow: 1;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 12px 22px;
+      font-weight: 600;
+      color: #0d47a1;
+      transition: all 0.25s ease;
+      border-radius: 12px;
+      margin: 4px 14px;
+      font-size: 0.96rem;
+    }
+
+    .sidebar a:hover {
+      background: linear-gradient(90deg, #bbdefb, #90caf9);
+      transform: translateX(6px);
+      color: #0c356a;
+    }
+
+    .sidebar a.active {
+      background: linear-gradient(90deg, #90caf9, #64b5f6);
+      color: white;
+      transform: none;
+    }
+
+    /*Logout Button */
+    .logout-section {
+      padding: 10px 20px;
+    }
+
+    .logout-link {
+      display: block;
+      text-align: center;
+      background: linear-gradient(45deg, #ef5350, #e53935);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 12px;
+      width: 100%;
+      padding: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .logout-link:hover {
+      background: linear-gradient(45deg, #e53935, #c62828);
+      transform: scale(1.05);
+      color: #fff;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 35px 45px;
+      background: linear-gradient(135deg, #f8fbff, #ffffff);
+      overflow-y: auto;
+      transition: all 0.3s ease;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .main-content h3, .main-content h1 {
+      color: #0d47a1;
+      font-weight: 700;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div>
+        <h3>MediLife Admin</h3>
+        <div class="nav-links">
+          <a href="{{ url_for('main.admin_dashboard') }}" 
+             class="{% if active == 'dashboard' %}active{% endif %}">Dashboard</a>
+
+          <a href="{{ url_for('main.admin_doctors') }}" 
+             class="{% if active == 'doctors' %}active{% endif %}">Doctors</a>
+
+          <a href="{{ url_for('main.admin_patients') }}" 
+             class="{% if active == 'patients' %}active{% endif %}">Patients</a>
+
+          <a href="{{ url_for('main.admin_appointments') }}" 
+             class="{% if active == 'appointments' %}active{% endif %}">Appointments</a>
+
+          <a href="{{ url_for('main.admin_treatments') }}" 
+             class="{% if active == 'treatments' %}active{% endif %}">Treatments</a>
+
+          <a href="{{ url_for('main.add_doctor') }}" 
+             class="{% if active == 'add_doctor' %}active{% endif %}">Add Doctor</a>
+
+          <a href="{{ url_for('main.admin_profile') }}" 
+             class="{% if active == 'profile' %}active{% endif %}">My Profile</a>
+        </div>
+      </div>
+
+      <!-- Logout Link -->
+      <div class="logout-section">
+        <a href="{{ url_for('main.logout') }}" class="logout-link">Logout</a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</body>
+</html>

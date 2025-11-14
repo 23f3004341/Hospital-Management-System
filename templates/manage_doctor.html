@@ -1,0 +1,72 @@
+{% extends "admin_base.html" %}
+{% block content %}
+<div class="container py-4">
+  <div class="card mx-auto shadow-sm" style="max-width:1000px;">
+    <div class="card-body">
+      <h3 class="text-center mb-4">Edit Doctor Profile</h3>
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="row g-3">
+          
+          <!-- Name Fields -->
+          <div class="col-md-4">
+            {{ form.first_name.label(class="form-label") }}
+            {{ form.first_name(class="form-control") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.middle_name.label(class="form-label") }}
+            {{ form.middle_name(class="form-control") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.last_name.label(class="form-label") }}
+            {{ form.last_name(class="form-control") }}
+          </div>
+
+          <!-- Email -->
+          <div class="col-md-6">
+            {{ form.email_address.label(class="form-label") }}
+            {{ form.email_address(class="form-control") }}
+          </div>
+
+          <!-- Contact -->
+          <div class="col-md-6">
+            <label class="form-label">Contact Number</label>
+            <input type="text" name="contact_number" class="form-control" 
+                   value="{{ form.contact_number.data or doctor.contact_number }}">
+          </div>
+
+          <!-- Address -->
+          <div class="col-md-12">
+            <label class="form-label">Address</label>
+            <textarea name="address" class="form-control" rows="2">{{ doctor.address or '' }}</textarea>
+          </div>
+
+          <!-- Experience -->
+          <div class="col-md-3">
+            {{ form.doctor_experience.label(class="form-label", text="Experience (Years)") }}
+            {{ form.doctor_experience(class="form-control") }}
+          </div>
+
+          <!-- Department -->
+          <div class="col-md-4">
+            {{ form.department_ref.label(class="form-label") }}
+            {{ form.department_ref(class="form-select") }}
+          </div>
+
+          <!-- Qualification -->
+          <div class="col-md-5">
+            {{ form.qualification.label(class="form-label") }}
+            {{ form.qualification(class="form-select") }}
+          </div>
+
+          <!-- Buttons -->
+          <div class="col-12 text-center mt-3">
+            <button type="submit" class="btn btn-success btn-lg">✅ Update</button>
+            <a href="{{ url_for('main.admin_doctors') }}" class="btn btn-secondary btn-lg ms-2">Cancel</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

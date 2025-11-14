@@ -1,0 +1,211 @@
+openapi: 3.0.3
+info:
+  title: Hospital Management System API
+  version: 1.0.0
+  description: >
+    API specification for the Hospital Management System project developed using Flask, SQLite, SQLAlchemy, and Flask-Login.
+    This API supports CRUD operations for appointments, user authentication, viewing treatment history, and doctor availability.
+
+servers:
+  - url: http://localhost:5000
+
+tags:
+  - name: Auth
+    description: User authentication
+  - name: Patient
+    description: Patient-level operations
+  - name: Doctor
+    description: Doctor-level operations
+  - name: Appointment
+    description: Appointment booking and management
+  - name: Treatment
+    description: Medical records
+
+paths:
+
+  /api/login:
+    post:
+      tags: [Auth]
+      summary: Authenticate user and return login status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: "mypassword"
+      responses:
+        "200":
+          description: Login successful
+        "401":
+          description: Invalid credentials
+
+  /api/patient/{patient_id}:
+    get:
+      tags: [Patient]
+      summary: Get patient details
+      parameters:
+        - name: patient_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Patient profile returned
+        "404":
+          description: Patient not found
+
+    put:
+      tags: [Patient]
+      summary: Update patient profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contact_number:
+                  type: string
+                address:
+                  type: string
+                emergency_contact:
+                  type: string
+      responses:
+        "200":
+          description: Profile updated
+        "400":
+          description: Validation error
+
+  /api/doctors:
+    get:
+      tags: [Doctor]
+      summary: Get list of doctors and departments
+      responses:
+        "200":
+          description: List of doctors returned
+
+  /api/doctor/{doctor_id}/availability:
+    get:
+      tags: [Doctor]
+      summary: Get doctor availability for the upcoming days
+      parameters:
+        - in: path
+          name: doctor_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Availability information returned
+
+  /api/appointments:
+    post:
+      tags: [Appointment]
+      summary: Book a new appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [patient_id, doctor_id, appointment_date, appointment_time]
+              properties:
+                patient_id:
+                  type: integer
+                  example: 12
+                doctor_id:
+                  type: integer
+                  example: 4
+                appointment_date:
+                  type: string
+                  example: "2025-11-14"
+                appointment_time:
+                  type: string
+                  example: "11:30 AM"
+      responses:
+        "201":
+          description: Appointment created
+        "409":
+          description: Slot already booked
+
+    get:
+      tags: [Appointment]
+      summary: Get all appointments for a user (patient or doctor)
+      parameters:
+        - in: query
+          name: user_id
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Appointments returned
+
+  /api/appointment/{appointment_id}/status:
+    patch:
+      tags: [Appointment]
+      summary: Update an appointment status (Cancel / Complete)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [Booked, Completed, Cancelled]
+      responses:
+        "200":
+          description: Status updated
+        "404":
+          description: Appointment not found
+
+  /api/treatment/{patient_id}:
+    get:
+      tags: [Treatment]
+      summary: Retrieve treatment history for a patient
+      responses:
+        "200":
+          description: Treatment records fetched successfully
+
+    post:
+      tags: [Treatment]
+      summary: Add treatment details after an appointment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [treatment_name, diagnosis, doctor_id]
+              properties:
+                treatment_name:
+                  type: string
+                diagnosis:
+                  type: string
+                prescription:
+                  type: string
+                notes:
+                  type: string
+                doctor_id:
+                  type: integer
+      responses:
+        "201":
+          description: Treatment added successfully
+
+components:
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: session
+
+security:
+  - sessionAuth: []

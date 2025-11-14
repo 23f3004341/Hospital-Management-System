@@ -1,0 +1,73 @@
+{% extends "patient_base.html" %}
+{% block patient_content %}
+
+<div class="p-4" style="background: linear-gradient(135deg, #f6f4ff, #fdfcff); min-height: 100vh;">
+  <h2 class="fw-bold text-center mb-3" style="color:#5a4e8c;">My Appointments</h2>
+  <p class="text-center text-muted mb-5">View your upcoming appointments and manage them easily.</p>
+
+  {% if appointments %}
+  <div class="row g-4 justify-content-center">
+    {% for appt in appointments %}
+    <div class="col-md-5">
+      <div class="card border-0 shadow-sm p-4" style="
+        border-radius:18px;
+        background: linear-gradient(180deg, #ffe9f0, #fff5f8);
+        box-shadow:0 6px 20px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;">
+        
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="fw-bold mb-0" style="color:#4c3f8a;">Dr. {{ appt.doctor.first_name }} {{ appt.doctor.last_name }}</h5>
+          <span class="badge rounded-pill px-3 py-2" 
+                style="background: #e8fff3; color:#2b6348; font-weight:600;">
+            {{ appt.appointment_status }}
+          </span>
+        </div>
+
+        <p class="mb-1">
+            <strong>Date:</strong>
+            {% if appt.appointment_date %}
+            {% if appt.appointment_date.__class__.__name__ == 'date' or appt.appointment_date.__class__.__name__ == 'datetime' %}
+            {{ appt.appointment_date.strftime("%d-%b-%Y") }}
+            {% else %}
+            {{ appt.appointment_date[:10] }}
+            {% endif %}
+            {% else %}
+            —
+            {% endif %}
+        </p>
+
+        <p class="mb-2"><strong>Time:</strong> {{ appt.appointment_time }}</p>
+        <p class="text-muted mb-3"><em>{{ appt.doctor.department.dept_name if appt.doctor.department else "—" }}</em></p>
+
+        {% if appt.appointment_status == "Booked" %}
+        <form method="POST" action="{{ url_for('main.cancel_appointment', appointment_id=appt.appointment_id) }}">
+          <button type="submit" class="btn w-100 py-2" 
+                  style="background: linear-gradient(90deg, #ffb6b6, #f6d6d6); color:#4c3f3f; font-weight:600; border:none; border-radius:10px;">
+            Cancel Appointment
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="text-center mt-5">
+    <h5 class="text-muted">No upcoming appointments found.</h5>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  const style = document.createElement('style');
+  style.textContent = `
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+
+{% endblock %}

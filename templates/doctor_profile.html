@@ -1,0 +1,59 @@
+{% extends "doctor_base.html" %}
+{% block doctor_content %}
+
+<div class="p-4" style="background: linear-gradient(135deg, #f6fdf8, #ffffff); min-height: 100vh;">
+  <div class="container">
+    <div class="card shadow-sm border-0 p-4" style="border-radius: 16px;">
+      <h3 class="text-center fw-bold mb-4" style="color:#0b8457;">
+        Dr. {{ doctor.first_name }} {{ doctor.last_name or '' }}
+      </h3>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <strong>User ID:</strong> {{ doctor.user_id }}
+        </div>
+        <div class="col-md-6 mb-3">
+          <strong>Username:</strong> {{ doctor.user_name }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <strong>Email Address:</strong> {{ doctor.email_address }}
+        </div>
+        <div class="col-md-6 mb-3">
+          <strong>Contact:</strong> {{ doctor.contact_number or '—' }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <strong>Department:</strong>
+          {% if doctor.department %}
+            {{ doctor.department.dept_name }}
+          {% else %}
+            —
+          {% endif %}
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <strong>Qualification:</strong> {{ doctor.doctor_qualification or '—' }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <strong>Experience:</strong> {{ doctor.doctor_experience or 0 }} years
+        </div>
+
+        <div class="col-md-12 mb-3">
+          <strong>Address:</strong> {{ doctor.address or '—' }}
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <a href="{{ url_for('main.doctor_dashboard') }}" 
+           class="btn px-4 py-2 fw-semibold"
+           style="background: linear-gradient(90deg, #0b8457, #41c28c); color:white; border:none; border-radius:10px;">
+          ← Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,185 @@
+{% extends "patient_base.html" %}
+{% block patient_content %}
+
+<style>
+/* Dashboard */
+.dashboard-wrapper {
+  background: #fafafe;
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: "Poppins", sans-serif;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Welcome */
+.welcome-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.welcome-header h2 {
+  font-weight: 800;
+  color: #3a2e75;
+  font-size: 2rem;
+}
+
+.welcome-header p {
+  color: #7a749b;
+  font-size: 1rem;
+}
+
+/* Appointment Cards */
+.appointment-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 25px 28px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  transition: 0.25s ease;
+  border: 1px solid #f1eefb;
+}
+
+.appointment-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+}
+
+.doc-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #342c63;
+  margin-bottom: 3px;
+}
+
+.doc-speciality {
+  font-size: 0.9rem;
+  color: #8b89a6;
+  margin-bottom: 15px;
+}
+
+.app-label {
+  font-weight: 600;
+  color: #4e4a67;
+}
+
+.status-pill {
+  padding: 6px 16px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-completed {
+  background: #d7f7e4;
+  color: #0b6f3c;
+}
+
+.status-cancelled {
+  background: #ffd8d6;
+  color: #b02a37;
+}
+
+.status-default {
+  background: #e2e7ff;
+  color: #3542a0;
+}
+
+/* Departments */
+.departments-grid {
+  margin-top: 45px;
+}
+
+.dept-btn {
+  padding: 22px;
+  background: white;
+  border-radius: 16px;
+  text-align: center;
+  font-weight: 600;
+  color: #3f3a74;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+  border: 1px solid #ede9ff;
+  transition: 0.25s ease-in-out;
+}
+
+.dept-btn:hover {
+  transform: translateY(-5px);
+  background: #f7f5ff;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.09);
+}
+
+</style>
+
+<div class="dashboard-wrapper">
+
+  <!--Welcome-->
+  <div class="welcome-header">
+    <h2>Welcome to MediLife</h2>
+    <p>Your personal space for appointments & health management.</p>
+  </div>
+
+  <!--Upcoming Appointments-->
+  <h4 class="fw-bold mb-4" style="color:#3c3578;">Your Upcoming Appointments</h4>
+
+  {% if upcoming_appointments %}
+  <div class="row g-4 mb-5">
+
+    {% for appt in upcoming_appointments %}
+    <div class="col-md-4">
+      <div class="appointment-card">
+
+        <div class="doc-name">{{ appt.doctor_name }}</div>
+        <div class="doc-speciality">{{ appt.department }}</div>
+
+        <p class="mb-1"><span class="app-label">Date:</span>  
+          {{ appt.appointment_date.strftime('%d %b %Y') }}
+        </p>
+
+        <p class="mb-3"><span class="app-label">Time:</span> 
+          {{ appt.appointment_time.strftime('%I:%M %p') }}
+        </p>
+
+        {% if appt.status == "Completed" %}
+          <span class="status-pill status-completed">Completed</span>
+        {% elif appt.status == "Cancelled" %}
+          <span class="status-pill status-cancelled">Cancelled</span>
+        {% else %}
+          <span class="status-pill status-default">{{ appt.status }}</span>
+        {% endif %}
+
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+
+  {% else %}
+  <div class="text-center mb-5">
+    <p class="text-muted">You have no upcoming appointments.</p>
+    <a href="{{ url_for('main.patient_book_page') }}" class="btn btn-gradient px-4 py-2">
+      Book Appointment
+    </a>
+  </div>
+  {% endif %}
+
+  <!-- Departments--> 
+  <h4 class="fw-bold text-center mb-4" style="color:#3c3578;">Our Departments</h4>
+
+  <div class="row departments-grid justify-content-center g-4 mb-4">
+
+    {% for dept in departments %}
+    <div class="col-md-3">
+      <div class="dept-btn">
+        {{ dept.dept_name }}
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+
+</div>
+
+{% endblock %}

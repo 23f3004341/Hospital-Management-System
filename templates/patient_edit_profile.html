@@ -1,0 +1,129 @@
+{% extends "patient_base.html" %}
+{% block patient_content %}
+
+<div class="container py-5">
+  <div class="card shadow-sm p-4" style="border-radius: 16px; background: #fff;">
+
+    <h4 class="fw-bold mb-3" style="color: #6a4fb6;">Edit Your Profile</h4>
+    <hr>
+
+    <form method="POST" novalidate>
+      {{ form.hidden_tag() }}
+
+      {% for field, errors in form.errors.items() %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>{{ form[field].label.text }}:</strong> {{ ', '.join(errors) }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      {% endfor %}
+
+      <!-- Name -->
+      <div class="row mb-3">
+        <div class="col-md-6">{{ form.first_name.label }} {{ form.first_name(class="form-control") }}</div>
+        <div class="col-md-6">{{ form.last_name.label }} {{ form.last_name(class="form-control") }}</div>
+      </div>
+
+      <!-- Username and Email -->
+      <div class="row mb-3">
+        <div class="col-md-6">{{ form.user_name.label }} {{ form.user_name(class="form-control") }}</div>
+        <div class="col-md-6">{{ form.email_address.label }} {{ form.email_address(class="form-control") }}</div>
+      </div>
+
+      <!-- Gender and dob -->
+      <div class="row mb-3">
+        <div class="col-md-6">{{ form.gender.label }} {{ form.gender(class="form-control") }}</div>
+        <div class="col-md-6">{{ form.dob.label }} {{ form.dob(class="form-control") }}</div>
+      </div>
+
+      <!-- Height and Weight -->
+      <div class="row mb-3">
+        <div class="col-md-6">{{ form.height.label }} {{ form.height(class="form-control") }}</div>
+        <div class="col-md-6">{{ form.weight.label }} {{ form.weight(class="form-control") }}</div>
+      </div>
+
+      <!-- Marital Status and contact number -->
+      <div class="row mb-3">
+        <div class="col-md-6">{{ form.marital_status.label }} {{ form.marital_status(class="form-control") }}</div>
+        <div class="col-md-6">{{ form.contact_number.label }} {{ form.contact_number(class="form-control") }}</div>
+      </div>
+
+      <!-- Nationality -->
+      <div class="mb-3">{{ form.nationality.label }} {{ form.nationality(class="form-control") }}</div>
+
+      <!-- Address -->
+      <div class="mb-3">{{ form.address.label }} {{ form.address(class="form-control") }}</div>
+      <div class="mb-3">{{ form.address_line2.label }} {{ form.address_line2(class="form-control") }}</div>
+
+      <div class="row mb-3">
+        <div class="col-md-3">{{ form.pincode.label }} {{ form.pincode(class="form-control") }}</div>
+        <div class="col-md-3">{{ form.city.label }} {{ form.city(class="form-control") }}</div>
+        <div class="col-md-3">{{ form.state.label }} {{ form.state(class="form-control") }}</div>
+        <div class="col-md-3">{{ form.country.label }} {{ form.country(class="form-control") }}</div>
+      </div>
+
+      <!-- Medical Information -->
+      <hr>
+      <h6 class="text-muted mb-2">Medical & Emergency Info</h6>
+
+      <div class="mb-3">
+        {{ form.medications.label }} {{ form.medications(class="form-control") }}
+      </div>
+
+      <!-- Emergency Contact -->
+      <div class="row mb-3">
+        <div class="col-md-4">{{ form.emergency_contact_name.label }} {{ form.emergency_contact_name(class="form-control") }}</div>
+        <div class="col-md-4">{{ form.emergency_contact_relationship.label }} {{ form.emergency_contact_relationship(class="form-control") }}</div>
+        <div class="col-md-4">{{ form.emergency_contact_number.label }} {{ form.emergency_contact_number(class="form-control") }}</div>
+      </div>
+
+      <!-- Save button -->
+      <div class="text-end">
+        <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+      </div>
+    </form>
+
+    <div class="text-center mt-4">
+      <a href="{{ url_for('main.patient_self_profile') }}" class="btn btn-outline-secondary">← Back to Profile</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Autofill City, State, Country from Pincode -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const pincodeField = document.querySelector('input[name="pincode"]');
+  const cityField = document.querySelector('input[name="city"]');
+  const stateField = document.querySelector('input[name="state"]');
+  const countryField = document.querySelector('input[name="country"]');
+
+  async function fetchPincodeDetails(pincode) {
+    if (pincode.length === 6) {
+      try {
+        const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+        const data = await response.json();
+        if (data[0].Status === "Success") {
+          const post = data[0].PostOffice[0];
+          cityField.value = post.Block || post.District || "";
+          stateField.value = post.State || "";
+          countryField.value = post.Country || "India";
+        } else {
+          cityField.value = "";
+          stateField.value = "";
+          countryField.value = "";
+        }
+      } catch (error) {
+        console.error("Pincode Fetch Error:", error);
+      }
+    }
+  }
+
+  if (pincodeField) {
+    pincodeField.addEventListener("input", () => {
+      fetchPincodeDetails(pincodeField.value.trim());
+    });
+  }
+});
+</script>
+
+{% endblock %}

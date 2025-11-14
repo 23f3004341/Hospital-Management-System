@@ -1,0 +1,43 @@
+{% extends "admin_base.html" %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="card shadow p-4" style="border-radius:15px;">
+        
+        <h3 class="text-center text-primary fw-bold">
+            Dr. {{ doctor.first_name }} {{ doctor.last_name }}
+        </h3>
+        <hr>
+
+        <div class="row mb-2">
+            <div class="col-md-6"><strong>User ID:</strong> {{ doctor.user_id }}</div>
+            <div class="col-md-6"><strong>Username:</strong> @{{ doctor.user_name }}</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-6"><strong>Email:</strong> {{ doctor.email_address }}</div>
+            <div class="col-md-6"><strong>Contact:</strong> {{ doctor.contact_number or '—' }}</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-6"><strong>Department:</strong> {{ doctor.department.dept_name if doctor.department else '—' }}</div>
+            <div class="col-md-6"><strong>Qualification:</strong> {{ doctor.doctor_qualification or '—' }}</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-6"><strong>Experience:</strong> {{ doctor.doctor_experience or '0' }} years</div>
+        </div>
+
+        <p><strong>Address:</strong> 
+            {{ doctor.address }}, {{ doctor.city }}, {{ doctor.state }}, 
+            {{ doctor.country }}, PIN {{ doctor.pincode }}
+        </p>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('main.admin_doctors') }}" class="btn btn-outline-primary">← Back to Dashboard</a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
