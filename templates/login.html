@@ -1,48 +1,245 @@
-{% extends "base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MediLife Login</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-<div class="container mt-5" style="max-width: 500px;">
-    <h2 class="text-center mb-4">Login</h2>
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #e6f4ff, #f8fdff);
+      overflow: hidden;
+      position: relative;
+    }
 
-    <form method="POST" action="{{ url_for('main.login') }}">
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        url("https://cdn-icons-png.flaticon.com/512/2966/2966487.png") no-repeat 10% 20%,
+        url("https://cdn-icons-png.flaticon.com/512/2966/2966481.png") no-repeat 85% 30%,
+        url("https://cdn-icons-png.flaticon.com/512/2966/2966528.png") no-repeat 20% 75%,
+        url("https://cdn-icons-png.flaticon.com/512/2966/2966531.png") no-repeat 90% 90%;
+      background-size: 180px, 180px, 180px, 180px;
+      opacity: 0.22;
+      z-index: 0;
+    }
 
+    .brand {
+      font-family: "Roboto", serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0d47a1;
+      padding: 25px 45px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 30px;
+      right: 45px;
+      background: transparent;
+      color: #0d47a1;
+      border: 2px solid #0d47a1;
+      border-radius: 10px;
+      font-weight: 600;
+      padding: 6px 14px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      z-index: 3;
+    }
+
+    .back-btn:hover {
+      background: #0d47a1;
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 80px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+      padding: 40px 50px;
+      width: 380px;
+      border: 1px solid #e3f2fd;
+      animation: fadeIn 0.7s ease-in-out;
+      position: relative;
+    }
+
+    .role-badge {
+      display: inline-block;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #e6f7ff, #d7eefb);
+      color: #0a4f86;
+      border: 1px solid rgba(10,79,134,0.08);
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      user-select: none;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #0d47a1;
+    }
+
+    .form-control {
+      border-radius: 12px;
+      border: 1px solid #d0d7de;
+      padding: 10px 14px;
+      transition: all 0.25s ease-in-out;
+    }
+
+    .form-control:focus {
+      border-color: #42a5f5;
+      box-shadow: 0 0 6px rgba(66, 165, 245, 0.4);
+    }
+
+    .btn-login {
+      background: linear-gradient(45deg, #42a5f5, #1e88e5);
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      color: white;
+      letter-spacing: 0.3px;
+      padding: 10px;
+      transition: all 0.25s ease-in-out;
+      width: 100%;
+    }
+
+    .btn-login:hover {
+      background: linear-gradient(45deg, #1e88e5, #1565c0);
+      transform: scale(1.03);
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #6b7280;
+      transition: color 0.3s;
+    }
+
+    .toggle-password:hover {
+      color: #1565c0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Brand -->
+  <div class="brand">MediLife Hospital</div>
+
+  <!-- Back button -->
+  <a href="{{ url_for('main.home') }}" class="back-btn">Back</a>
+
+  <!-- Login Card -->
+  <div class="login-container">
+    <div class="login-card">
+        {% if wrong_credentials %}
+        <div class="alert alert-danger text-center" style="
+        border-radius: 12px;
+        font-weight: 500;
+        margin-bottom: 18px;
+        background: #ffe6e6;
+        border: 1px solid #ffb3b3;
+        color: #b30000;"
+        >⚠️ Wrong credentials. Please try again.
+        </div>
+        {% endif %}
+
+      <form method="POST">
         {{ form.hidden_tag() }}
+
+        <!-- Visible role badge -->
+        <div class="mb-2">
+          <span class="role-badge" id="roleBadge">Role</span>
+        </div>
 
         <!-- Email -->
         <div class="mb-3">
-            {{ form.email.label(class="form-label") }}
-            {{ form.email(class="form-control", placeholder="Enter your email") }}
+          {{ form.email.label(class="form-label") }}
+          {{ form.email(class="form-control", placeholder="Enter your email") }}
         </div>
 
         <!-- Password -->
-        <div class="mb-3">
-            {{ form.password.label(class="form-label") }}
-            {{ form.password(class="form-control", placeholder="Enter your password") }}
+        <div class="mb-3 password-wrapper">
+          {{ form.password.label(class="form-label") }}
+          {{ form.password(class="form-control", placeholder="Enter your password", id="password") }}
+          <i class="bi bi-eye toggle-password" id="togglePassword"></i>
         </div>
 
-        <!-- Login as -->
-        <div class="mb-3">
-            {{ form.login_as.label(class="form-label") }}
-            {{ form.login_as(class="form-select") }}
+        <!-- Hidden role input that will be submitted -->
+        <input type="hidden" name="login_as" id="loginAsHidden">
+
+        <!-- Remember me -->
+        <div class="mb-3 form-check">
+          {{ form.remember_me(class="form-check-input") }}
+          {{ form.remember_me.label(class="form-check-label") }}
         </div>
 
-        <!-- Remember Me -->
-        <div class="form-check mb-3">
-            {{ form.remember_me(class="form-check-input") }}
-            {{ form.remember_me.label(class="form-check-label") }}
-        </div>
+        <button type="submit" class="btn-login">Login</button>
+      </form>
+    </div>
+  </div>
 
-        <!-- Submit -->
-        <div class="d-grid">
-            {{ form.submit(class="btn btn-primary btn-lg") }}
-        </div>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Register Link -->
-        <div class="text-center mt-3">
-            <p>New user? <a href="{{ url_for('main.register') }}">Register as Patient</a></p>
+  <script>
+    //Toggle password visibility
+    const togglePassword = document.querySelector('#togglePassword');
+    const passwordInput = document.querySelector('#password');
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      togglePassword.classList.toggle('bi-eye');
+      togglePassword.classList.toggle('bi-eye-slash');
+    });
 
-        </div>
-    </form>
-</div>
+    (function setRoleFromQuery() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const preRole = (urlParams.get('role') || '').toLowerCase();
+      const allowed = ['admin','doctor','patient'];
+      const role = allowed.includes(preRole) ? preRole : '';
+      const hiddenRole = document.getElementById('loginAsHidden');
+      const badge = document.getElementById('roleBadge');
 
-{% endblock %}
+      if (role) {
+        hiddenRole.value = role;
+        badge.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+      } else {
+        badge.style.display = 'none';
+      }
+    })();
+  </script>
+</body>
+</html>
