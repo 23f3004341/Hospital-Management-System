@@ -1,74 +1,262 @@
-{% extends 'base.html' %}
-
+{% extends "admin_base.html" %}
 {% block content %}
-<h2>Add New Doctor</h2>
 
-<form method="POST" action="">
-    {{ form.hidden_tag() }}
+<style>
+  body {
+    background: linear-gradient(135deg, #e9f3ff, #f8fbff);
+    font-family: "Inter", sans-serif;
+  }
 
-    {{ form.first_name.label(class="form-label") }}
-    {{ form.first_name(class="form-control", placeholder="First name") }}
+  .card {
+    border: none;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeUp 0.6s ease-in-out;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  }
 
-    {{ form.middle_name.label(class="form-label") }}
-    {{ form.middle_name(class="form-control", placeholder="Middle name (optional)") }}
+  h3 {
+    color: #0d47a1;
+    font-weight: 700;
+    margin-bottom: 1.8rem;
+  }
 
-    {{ form.last_name.label(class="form-label") }}
-    {{ form.last_name(class="form-control", placeholder="Last name") }}
+  .form-label {
+    font-weight: 600;
+    color: #0d47a1;
+  }
+  .required-star {
+    color: #e53935;
+    margin-left: 3px;
+  }
 
-    {{ form.user_name.label(class="form-label") }}
-    {{ form.user_name(class="form-control", id="usernameField", placeholder="Optional; will be generated from name if left empty") }}
-    <small>⟳ If empty, username will be generated automatically (first.last). Use the button to force-generate.</small>
+  .section-title {
+    font-weight: 700;
+    color: #1565c0;
+    margin-top: 1.6rem;
+    margin-bottom: 0.8rem;
+    border-left: 4px solid #64b5f6;
+    padding-left: 10px;
+  }
 
-    {{ form.email_address.label(class="form-label") }}
-    {{ form.email_address(class="form-control", placeholder="doctor@example.com") }}
+  .form-control, .form-select {
+    border-radius: 12px;
+    border: 1px solid #d0d7de;
+    padding: 10px 14px;
+    transition: all 0.25s ease-in-out;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: #42a5f5;
+    box-shadow: 0 0 8px rgba(66, 165, 245, 0.4);
+  }
+  .readonly-field {
+    background-color: #f2f4f8 !important;
+    color: #6c757d !important;
+    cursor: not-allowed;
+  }
 
-    {{ form.password.label(class="form-label") }}
-    {{ form.password(class="form-control", id="passwordField", placeholder="Set initial password") }}
-    <small>👁 Share this initial password with the doctor securely. They can change it later.</small>
+  .btn-success {
+    background: linear-gradient(45deg, #42a5f5, #1e88e5);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.25s ease-in-out;
+  }
+  .btn-success:hover {
+    transform: scale(1.05);
+    background: linear-gradient(45deg, #1e88e5, #1565c0);
+  }
 
-    {{ form.confirm_password.label(class="form-label") }}
-    {{ form.confirm_password(class="form-control", placeholder="Confirm initial password") }}
+  .btn-secondary {
+    border-radius: 10px;
+    font-weight: 600;
+    color: #495057;
+    background-color: #e9f3ff;
+    border: none;
+    transition: all 0.25s ease;
+  }
+  .btn-secondary:hover {
+    background-color: #d1e8ff;
+  }
 
-    {{ form.gender.label(class="form-label") }}
-    {{ form.gender(class="form-select") }}
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-    {{ form.dob.label(class="form-label") }}
-    {{ form.dob(class="form-control", placeholder="YYYY-MM-DD or DD/MM/YYYY") }}
+  .form-control.valid {
+    border-color: #2e7d32;
+    box-shadow: 0 0 6px rgba(46, 125, 50, 0.4);
+  }
+  .form-control.invalid {
+    border-color: #e53935;
+    box-shadow: 0 0 6px rgba(229, 57, 53, 0.4);
+  }
+</style>
 
-    {{ form.country_code.label(class="form-label") }}
-    {{ form.country_code(class="form-select") }}
+<div class="container py-5">
+  <div class="card mx-auto" style="max-width: 950px;">
+    <div class="card-body">
+      <h3 class="text-center">Add New Doctor</h3>
 
-    {{ form.contact_number.label(class="form-label") }}
-    {{ form.contact_number(class="form-control", placeholder="e.g., 9876543210") }}
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
 
-    {{ form.address_line1.label(class="form-label") }}
-    {{ form.address_line1(class="form-control", placeholder="Address line 1") }}
+        <!-- Basic Info -->
+        <div class="section-title">Basic Information</div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            {{ form.first_name.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.first_name(class="form-control", id="firstName", placeholder="Enter first name") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.middle_name.label(class="form-label") }}
+            {{ form.middle_name(class="form-control", id="middleName", placeholder="Middle name (optional)") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.last_name.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.last_name(class="form-control", id="lastName", placeholder="Enter last name") }}
+          </div>
+        </div>
 
-    {{ form.address_line2.label(class="form-label") }}
-    {{ form.address_line2(class="form-control", placeholder="Address line 2 (optional)") }}
+        <!-- Account Info -->
+        <div class="section-title">Account Details</div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            {{ form.user_name.label(class="form-label") }}
+            {{ form.user_name(class="form-control readonly-field", id="userName", readonly=True, placeholder="Auto-generated") }}
+          </div>
+          <div class="col-md-6">
+            {{ form.email_address.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.email_address(class="form-control", placeholder="doctor@example.com") }}
+          </div>
+        </div>
 
-    {{ form.pincode.label(class="form-label") }}
-    {{ form.pincode(class="form-control", id="pincodeField", placeholder="Pincode / ZIP") }}
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            {{ form.password.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.password(class="form-control", placeholder="Set initial password") }}
+          </div>
+          <div class="col-md-6">
+            {{ form.confirm_password.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.confirm_password(class="form-control", placeholder="Confirm password") }}
+          </div>
+        </div>
 
-    {{ form.city.label(class="form-label") }}
-    {{ form.city(class="form-control", id="cityField", placeholder="City (autofill)") }}
+        <!-- Personal Info -->
+        <div class="section-title">Personal Information</div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">{{ form.gender.label(class="form-label") }}<span class="required-star">*</span>{{ form.gender(class="form-select") }}</div>
+          <div class="col-md-4">{{ form.dob.label(class="form-label") }}{{ form.dob(class="form-control") }}</div>
+          <div class="col-md-4">{{ form.doctor_experience.label(class="form-label") }}<span class="required-star">*</span>{{ form.doctor_experience(class="form-control", placeholder="Years of experience") }}</div>
+        </div>
 
-    {{ form.state.label(class="form-label") }}
-    {{ form.state(class="form-control", id="stateField", placeholder="State (autofill)") }}
+        <!-- Contact Info -->
+        <div class="section-title">Contact & Address</div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">{{ form.country_code.label(class="form-label") }}<span class="required-star">*</span>{{ form.country_code(class="form-select") }}</div>
+          <div class="col-md-8">
+            {{ form.contact_number.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.contact_number(class="form-control", id="contactNumber", placeholder="10-digit contact number") }}
+          </div>
+        </div>
 
-    {{ form.country.label(class="form-label") }}
-    {{ form.country(class="form-control", id="countryField", placeholder="Country (autofill)") }}
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">{{ form.address_line1.label(class="form-label") }}<span class="required-star">*</span>{{ form.address_line1(class="form-control", placeholder="Address line 1") }}</div>
+          <div class="col-md-6">{{ form.address_line2.label(class="form-label") }}{{ form.address_line2(class="form-control", placeholder="Address line 2 (optional)") }}</div>
+        </div>
 
-    {{ form.department_ref.label(class="form-label") }}
-    {{ form.department_ref(class="form-select") }}
+        <div class="row g-3 mb-3">
+          <div class="col-md-3">
+            {{ form.pincode.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.pincode(class="form-control", id="pincode", placeholder="6-digit pincode") }}
+          </div>
+          <div class="col-md-3">{{ form.city.label(class="form-label") }}{{ form.city(class="form-control readonly-field", id="city", readonly=True, placeholder="Auto-filled") }}</div>
+          <div class="col-md-3">{{ form.state.label(class="form-label") }}{{ form.state(class="form-control readonly-field", id="state", readonly=True, placeholder="Auto-filled") }}</div>
+          <div class="col-md-3">{{ form.country.label(class="form-label") }}{{ form.country(class="form-control readonly-field", id="country", readonly=True, placeholder="Auto-filled") }}</div>
+        </div>
 
-    {{ form.qualification.label(class="form-label") }}
-    {{ form.qualification(class="form-select") }}
+        <!-- Department -->
+        <div class="section-title">Professional Details</div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">{{ form.department_ref.label(class="form-label") }}<span class="required-star">*</span>{{ form.department_ref(class="form-select") }}</div>
+          <div class="col-md-6">{{ form.qualification.label(class="form-label") }}<span class="required-star">*</span>{{ form.qualification(class="form-select") }}</div>
+        </div>
 
-    {{ form.doctor_experience.label(class="form-label") }}
-    {{ form.doctor_experience(class="form-control", placeholder="Years of experience") }}
+        <div class="text-center mt-4">
+          <button type="submit" class="btn btn-success btn-lg px-5 shadow">Add Doctor</button>
+          <a href="{{ url_for('main.admin_doctors') }}" class="btn btn-secondary btn-lg ms-2 shadow-sm">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
-    <br>
-    {{ form.submit(class="btn btn-success btn-lg") }}
-</form>
+<script>
+  const contactInput = document.getElementById("contactNumber");
+  contactInput.addEventListener("input", () => {
+    contactInput.value = contactInput.value.replace(/\D/g, '').slice(0, 10);
+  });
+
+  const pincodeInput = document.getElementById("pincode");
+  pincodeInput.addEventListener("input", () => {
+    pincodeInput.value = pincodeInput.value.replace(/\D/g, '').slice(0, 6);
+  });
+
+  const firstNameEl = document.getElementById("firstName");
+  const userNameEl = document.getElementById("userName");
+  contactInput.addEventListener("input", generateUsername);
+  firstNameEl.addEventListener("input", generateUsername);
+  function generateUsername() {
+    const first = firstNameEl.value.trim().toLowerCase();
+    const contact = contactInput.value.trim();
+    if (first && contact.length >= 2) {
+      userNameEl.value = `${first}_${contact.slice(-2)}`;
+    }
+  }
+
+  const cityEl = document.getElementById("city");
+  const stateEl = document.getElementById("state");
+  const countryEl = document.getElementById("country");
+  pincodeInput.addEventListener("blur", async () => {
+    const pincode = pincodeInput.value.trim();
+    if (pincode.length === 6) {
+      try {
+        const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+        const data = await response.json();
+        if (data[0].Status === "Success") {
+          const postOffice = data[0].PostOffice[0];
+          cityEl.value = postOffice.District || "";
+          stateEl.value = postOffice.State || "";
+          countryEl.value = postOffice.Country || "India";
+        } else {
+          cityEl.value = stateEl.value = countryEl.value = "";
+          alert("Invalid Pincode. Please check.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Unable to fetch location details.");
+      }
+    }
+  });
+
+  document.querySelectorAll('.form-control, .form-select').forEach(el => {
+    el.addEventListener('blur', () => {
+      if (el.checkValidity()) {
+        el.classList.remove("invalid");
+        el.classList.add("valid");
+      } else {
+        el.classList.remove("valid");
+        el.classList.add("invalid");
+      }
+    });
+  });
+</script>
+
 {% endblock %}
