@@ -1,100 +1,110 @@
-{% extends "base.html" %}
-
+{% extends "admin_base.html" %}
 {% block content %}
-<h2>Admin Dashboard</h2>
-<p>Welcome, {{ current_user.user_name }} 👋</p>
 
-<hr>
-<h3>Manage System Records</h3>
-<a href="{{ url_for('main.add_doctor') }}" class="btn btn-primary">➕ Add Doctor</a>
+<style>
+  body {
+    background: linear-gradient(135deg, #eaf3ff, #f6faff);
+    font-family: "Inter", sans-serif;
+  }
 
-<hr>
-<h4>👨‍⚕️ Registered Doctors</h4>
-{% if doctors %}
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Qualification</th>
-      <th>Experience (yrs)</th>
-      <th>Department</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for doctor in doctors %}
-    <tr>
-      <td>{{ doctor.user_name }}</td>
-      <td>{{ doctor.email_address }}</td>
-      <td>{{ doctor.doctor_qualification or '-' }}</td>
-      <td>{{ doctor.doctor_experience or 0 }}</td>
-      <td>
-        {% if doctor.department %}
-          {{ doctor.department.dept_name }}
-        {% else %}
-          -
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<p>No doctors registered yet.</p>
-{% endif %}
+  .dashboard-container {
+    animation: fadeIn 1s ease-in-out;
+    padding: 40px 20px;
+    text-align: center;
+  }
 
-<hr>
-<h4>🧑‍🤝‍🧑 Registered Patients</h4>
-{% if patients %}
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Gender</th>
-      <th>Contact</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for patient in patients %}
-    <tr>
-      <td>{{ patient.user_name }}</td>
-      <td>{{ patient.email_address }}</td>
-      <td>{{ patient.gender or '-' }}</td>
-      <td>{{ patient.contact_number or '-' }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<p>No patients registered yet.</p>
-{% endif %}
+  .dashboard-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #0d47a1;
+    margin-bottom: 10px;
+  }
 
-<hr>
-<h4>📅 Appointments</h4>
-{% if appointments %}
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Patient</th>
-      <th>Doctor</th>
-      <th>Date</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for appt in appointments %}
-    <tr>
-      <td>{{ appt.patient.user_name }}</td>
-      <td>{{ appt.doctor.user_name }}</td>
-      <td>{{ appt.appointment_date }}</td>
-      <td>{{ appt.appointment_status or 'Pending' }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<p>No appointments scheduled yet.</p>
-{% endif %}
+  .dashboard-subtitle {
+    font-size: 1.2rem;
+    color: #5f6f87;
+    margin-bottom: 40px;
+  }
+
+  /* Cards Container */
+  .cards-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    margin-top: 20px;
+  }
+
+  /* Individual Card */
+  .stat-card {
+    width: 450px;
+    padding: 24px;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    font-weight: 700;
+    transition: 0.3s;
+  }
+
+  .stat-card:hover {
+    transform: scale(1.03);
+  }
+
+  .stat-title {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: #333;
+  }
+
+  .stat-value {
+    font-size: 2.6rem;
+    font-weight: 900;
+    margin-top: 8px;
+  }
+
+  /* Card Colors */
+  .blue-card {
+    background: linear-gradient(135deg, #dceefb, #b3e5fc);
+  }
+
+  .green-card {
+    background: linear-gradient(135deg, #e2fbe8, #b2f2bb);
+  }
+
+  .yellow-card {
+    background: linear-gradient(135deg, #fff4cc, #ffeaa7);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+
+
+<div class="dashboard-container">
+
+  <h1 class="dashboard-title">Welcome, Admin</h1>
+  <p class="dashboard-subtitle">Effortlessly monitor and manage MediLife operations.</p>
+
+  <div class="cards-wrapper">
+
+    <div class="stat-card blue-card">
+      <div class="stat-title">Total Doctors</div>
+      <div class="stat-value">{{ total_doctors }}</div>
+    </div>
+
+    <div class="stat-card green-card">
+      <div class="stat-title">Total Patients</div>
+      <div class="stat-value">{{ total_patients }}</div>
+    </div>
+
+    <div class="stat-card yellow-card">
+      <div class="stat-title">Total Appointments</div>
+      <div class="stat-value">{{ total_appointments }}</div>
+    </div>
+
+  </div>
+
+</div>
 
 {% endblock %}
