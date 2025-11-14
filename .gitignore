@@ -2,6 +2,10 @@
 __pycache__/
 *.pyc
 
+# Environment folders
+venv/
+env/
+
 # SQLite database
 *.db
 
