@@ -1,24 +1,24 @@
-# 🏥 Hospital Management System
+# Hospital Management System
 
 A complete role-based Hospital Management System built using **Flask**, designed to streamline patient management, appointment scheduling, doctor availability, and administrative control.
 
 ---
 
-## 🚀 Features
+## Features
 
-### 👨‍💼 Admin Panel
+### Admin Panel
 - Add, manage, and remove doctors and patients  
 - View all appointments and treatments  
 - Blacklist users when required  
 - View system statistics (doctors, patients, appointments)
 
-### 👨‍⚕️ Doctor Panel
+### Doctor Panel
 - View assigned patients  
 - Manage and complete appointments  
 - Add treatments and diagnosis details  
 - Update availability schedule with time slots  
 
-### 👤 Patient Portal
+### Patient Portal
 - Register and manage profile  
 - View upcoming appointments  
 - Browse doctor availability  
@@ -27,7 +27,7 @@ A complete role-based Hospital Management System built using **Flask**, designed
 
 ---
 
-## 🔧 Tech Stack
+## Tech Stack
 
 | Category | Technology |
 |----------|------------|
@@ -38,6 +38,4 @@ A complete role-based Hospital Management System built using **Flask**, designed
 | Forms & Validation | Flask-WTF |
 
 ---
-
-## 📁 Folder Structure
 
