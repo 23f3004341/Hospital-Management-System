@@ -89,23 +89,13 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
-  .form-control.valid {
-    border-color: #2e7d32;
-    box-shadow: 0 0 6px rgba(46, 125, 50, 0.4);
-  }
-  .form-control.invalid {
-    border-color: #e53935;
-    box-shadow: 0 0 6px rgba(229, 57, 53, 0.4);
-  }
 </style>
 
 <div class="container py-5">
   <div class="card mx-auto" style="max-width: 950px;">
     <div class="card-body">
       <h3 class="text-center">Add New Doctor</h3>
-
-      <form method="POST" novalidate>
+      <form method="POST">
         {{ form.hidden_tag() }}
 
         <!-- Basic Info -->
@@ -113,7 +103,7 @@
         <div class="row g-3 mb-3">
           <div class="col-md-4">
             {{ form.first_name.label(class="form-label") }}<span class="required-star">*</span>
-            {{ form.first_name(class="form-control", id="firstName", placeholder="Enter first name") }}
+            {{ form.first_name(class="form-control", id="firstName", placeholder="Enter first name", required=True) }}
           </div>
           <div class="col-md-4">
             {{ form.middle_name.label(class="form-label") }}
@@ -121,7 +111,7 @@
           </div>
           <div class="col-md-4">
             {{ form.last_name.label(class="form-label") }}<span class="required-star">*</span>
-            {{ form.last_name(class="form-control", id="lastName", placeholder="Enter last name") }}
+            {{ form.last_name(class="form-control", id="lastName", placeholder="Enter last name", required=True) }}
           </div>
         </div>
 
@@ -130,63 +120,114 @@
         <div class="row g-3 mb-3">
           <div class="col-md-6">
             {{ form.user_name.label(class="form-label") }}
-            {{ form.user_name(class="form-control readonly-field", id="userName", readonly=True, placeholder="Auto-generated") }}
+            {# can be filled by backend if you auto-generate #}
+            {{ form.user_name(class="form-control", id="userName", placeholder="Will be auto-set or can be edited") }}
           </div>
           <div class="col-md-6">
             {{ form.email_address.label(class="form-label") }}<span class="required-star">*</span>
-            {{ form.email_address(class="form-control", placeholder="doctor@example.com") }}
+            {{ form.email_address(class="form-control", placeholder="doctor@example.com", required=True) }}
           </div>
         </div>
 
         <div class="row g-3 mb-3">
           <div class="col-md-6">
             {{ form.password.label(class="form-label") }}<span class="required-star">*</span>
-            {{ form.password(class="form-control", placeholder="Set initial password") }}
+            {{ form.password(class="form-control", placeholder="Set initial password", required=True) }}
           </div>
           <div class="col-md-6">
             {{ form.confirm_password.label(class="form-label") }}<span class="required-star">*</span>
-            {{ form.confirm_password(class="form-control", placeholder="Confirm password") }}
+            {{ form.confirm_password(class="form-control", placeholder="Confirm password", required=True) }}
           </div>
         </div>
 
         <!-- Personal Info -->
         <div class="section-title">Personal Information</div>
         <div class="row g-3 mb-3">
-          <div class="col-md-4">{{ form.gender.label(class="form-label") }}<span class="required-star">*</span>{{ form.gender(class="form-select") }}</div>
-          <div class="col-md-4">{{ form.dob.label(class="form-label") }}{{ form.dob(class="form-control") }}</div>
-          <div class="col-md-4">{{ form.doctor_experience.label(class="form-label") }}<span class="required-star">*</span>{{ form.doctor_experience(class="form-control", placeholder="Years of experience") }}</div>
+          <div class="col-md-4">
+            {{ form.gender.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.gender(class="form-select", required=True) }}
+          </div>
+          <div class="col-md-4">
+            {{ form.dob.label(class="form-label") }}
+            {{ form.dob(class="form-control") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.doctor_experience.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.doctor_experience(class="form-control", placeholder="Years of experience", min="0", required=True) }}
+          </div>
         </div>
 
         <!-- Contact Info -->
         <div class="section-title">Contact & Address</div>
         <div class="row g-3 mb-3">
-          <div class="col-md-4">{{ form.country_code.label(class="form-label") }}<span class="required-star">*</span>{{ form.country_code(class="form-select") }}</div>
+          <div class="col-md-4">
+            {{ form.country_code.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.country_code(class="form-select", required=True) }}
+          </div>
           <div class="col-md-8">
             {{ form.contact_number.label(class="form-label") }}<span class="required-star">*</span>
-            {{ form.contact_number(class="form-control", id="contactNumber", placeholder="10-digit contact number") }}
+            {{ form.contact_number(
+                class="form-control",
+                id="contactNumber",
+                placeholder="10-digit contact number",
+                type="tel",
+                pattern="\\d{10}",
+                minlength="10",
+                maxlength="10",
+                required=True
+            ) }}
           </div>
         </div>
 
         <div class="row g-3 mb-3">
-          <div class="col-md-6">{{ form.address_line1.label(class="form-label") }}<span class="required-star">*</span>{{ form.address_line1(class="form-control", placeholder="Address line 1") }}</div>
-          <div class="col-md-6">{{ form.address_line2.label(class="form-label") }}{{ form.address_line2(class="form-control", placeholder="Address line 2 (optional)") }}</div>
+          <div class="col-md-6">
+            {{ form.address_line1.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.address_line1(class="form-control", placeholder="Address line 1", required=True) }}
+          </div>
+          <div class="col-md-6">
+            {{ form.address_line2.label(class="form-label") }}
+            {{ form.address_line2(class="form-control", placeholder="Address line 2 (optional)") }}
+          </div>
         </div>
 
         <div class="row g-3 mb-3">
           <div class="col-md-3">
             {{ form.pincode.label(class="form-label") }}<span class="required-star">*</span>
-            {{ form.pincode(class="form-control", id="pincode", placeholder="6-digit pincode") }}
+            {{ form.pincode(
+                class="form-control",
+                id="pincode",
+                placeholder="6-digit pincode",
+                pattern="\\d{6}",
+                minlength="6",
+                maxlength="6",
+                required=True
+            ) }}
           </div>
-          <div class="col-md-3">{{ form.city.label(class="form-label") }}{{ form.city(class="form-control readonly-field", id="city", readonly=True, placeholder="Auto-filled") }}</div>
-          <div class="col-md-3">{{ form.state.label(class="form-label") }}{{ form.state(class="form-control readonly-field", id="state", readonly=True, placeholder="Auto-filled") }}</div>
-          <div class="col-md-3">{{ form.country.label(class="form-label") }}{{ form.country(class="form-control readonly-field", id="country", readonly=True, placeholder="Auto-filled") }}</div>
+          <div class="col-md-3">
+            {{ form.city.label(class="form-label") }}
+            {{ form.city(class="form-control readonly-field", id="city", readonly=True, placeholder="Auto-filled") }}
+          </div>
+          <div class="col-md-3">
+            {{ form.state.label(class="form-label") }}
+            {{ form.state(class="form-control readonly-field", id="state", readonly=True, placeholder="Auto-filled") }}
+          </div>
+          <div class="col-md-3">
+            {{ form.country.label(class="form-label") }}
+            {{ form.country(class="form-control readonly-field", id="country", readonly=True, placeholder="Auto-filled") }}
+          </div>
         </div>
 
         <!-- Department -->
         <div class="section-title">Professional Details</div>
         <div class="row g-3 mb-3">
-          <div class="col-md-6">{{ form.department_ref.label(class="form-label") }}<span class="required-star">*</span>{{ form.department_ref(class="form-select") }}</div>
-          <div class="col-md-6">{{ form.qualification.label(class="form-label") }}<span class="required-star">*</span>{{ form.qualification(class="form-select") }}</div>
+          <div class="col-md-6">
+            {{ form.department_ref.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.department_ref(class="form-select", required=True) }}
+          </div>
+          <div class="col-md-6">
+            {{ form.qualification.label(class="form-label") }}<span class="required-star">*</span>
+            {{ form.qualification(class="form-select", required=True) }}
+          </div>
         </div>
 
         <div class="text-center mt-4">
@@ -199,31 +240,12 @@
 </div>
 
 <script>
-  const contactInput = document.getElementById("contactNumber");
-  contactInput.addEventListener("input", () => {
-    contactInput.value = contactInput.value.replace(/\D/g, '').slice(0, 10);
-  });
-
+document.addEventListener("DOMContentLoaded", function () {
   const pincodeInput = document.getElementById("pincode");
-  pincodeInput.addEventListener("input", () => {
-    pincodeInput.value = pincodeInput.value.replace(/\D/g, '').slice(0, 6);
-  });
-
-  const firstNameEl = document.getElementById("firstName");
-  const userNameEl = document.getElementById("userName");
-  contactInput.addEventListener("input", generateUsername);
-  firstNameEl.addEventListener("input", generateUsername);
-  function generateUsername() {
-    const first = firstNameEl.value.trim().toLowerCase();
-    const contact = contactInput.value.trim();
-    if (first && contact.length >= 2) {
-      userNameEl.value = `${first}_${contact.slice(-2)}`;
-    }
-  }
-
   const cityEl = document.getElementById("city");
   const stateEl = document.getElementById("state");
   const countryEl = document.getElementById("country");
+
   pincodeInput.addEventListener("blur", async () => {
     const pincode = pincodeInput.value.trim();
     if (pincode.length === 6) {
@@ -236,7 +258,9 @@
           stateEl.value = postOffice.State || "";
           countryEl.value = postOffice.Country || "India";
         } else {
-          cityEl.value = stateEl.value = countryEl.value = "";
+          cityEl.value = "";
+          stateEl.value = "";
+          countryEl.value = "";
           alert("Invalid Pincode. Please check.");
         }
       } catch (err) {
@@ -245,18 +269,7 @@
       }
     }
   });
-
-  document.querySelectorAll('.form-control, .form-select').forEach(el => {
-    el.addEventListener('blur', () => {
-      if (el.checkValidity()) {
-        el.classList.remove("invalid");
-        el.classList.add("valid");
-      } else {
-        el.classList.remove("valid");
-        el.classList.add("invalid");
-      }
-    });
-  });
+});
 </script>
 
 {% endblock %}

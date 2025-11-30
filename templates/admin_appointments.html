@@ -4,9 +4,9 @@
 <div class="container-fluid mt-3" style="font-family: 'Poppins', sans-serif;">
 
   <div class="sticky-top bg-white py-3 shadow-sm rounded-3 px-3"
-       style="z-index: 1020; border-left: 4px solid #6c63ff;">
+       style="z-index: 1020; border-left: 4px solid #a5b4fc;">
     <div class="d-flex justify-content-between align-items-center flex-wrap">
-      <h3 class="fw-bold mb-2 mb-md-0" style="color: #2b3a55;">
+      <h3 class="fw-bold mb-2 mb-md-0" style="color: #334155;">
         Manage Appointments
       </h3>
 
@@ -32,7 +32,6 @@
             onchange="this.form.submit()">
             <option value="all" {% if selected_status == 'all' %}selected{% endif %}>All</option>
             <option value="Booked" {% if selected_status == 'Booked' %}selected{% endif %}>Booked</option>
-            <option value="Confirmed" {% if selected_status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
             <option value="Completed" {% if selected_status == 'Completed' %}selected{% endif %}>Completed</option>
             <option value="Cancelled" {% if selected_status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
           </select>
@@ -45,7 +44,7 @@
   {% if appointments %}
   <div class="table-responsive shadow-sm mt-4 rounded-3">
     <table class="table table-hover align-middle text-center mb-0">
-      <thead style="background: linear-gradient(90deg, #6c63ff, #4834d4); color: white;">
+      <thead style="background: linear-gradient(90deg, #eef2ff, #e0e7ff); color: #334155;">
         <tr>
           <th>Appointment ID</th>
           <th>Date</th>
@@ -65,22 +64,40 @@
 
           <td>
             {% if appt.appointment_status == "Confirmed" %}
-              <span class="badge rounded-pill px-3 py-2 text-white" style="background: #1abc9c;">Confirmed</span>
+              <span class="badge rounded-pill px-3 py-2"
+                    style="background:#ede9fe; color:#5b21b6;">
+                Confirmed
+              </span>
             {% elif appt.appointment_status == "Completed" %}
-              <span class="badge rounded-pill px-3 py-2 text-white" style="background: #3498db;">Completed</span>
+              {# green #}
+              <span class="badge rounded-pill px-3 py-2"
+                    style="background:#bbf7d0; color:#166534;">
+                Completed
+              </span>
             {% elif appt.appointment_status == "Cancelled" %}
-              <span class="badge rounded-pill px-3 py-2 text-white" style="background: #e74c3c;">Cancelled</span>
+              {# red #}
+              <span class="badge rounded-pill px-3 py-2"
+                    style="background:#fecaca; color:#b91c1c;">
+                Cancelled
+              </span>
             {% elif appt.appointment_status == "Booked" %}
-              <span class="badge rounded-pill px-3 py-2 text-white" style="background: #9b59b6;">Booked</span>
+              {# blue #}
+              <span class="badge rounded-pill px-3 py-2"
+                    style="background:#bfdbfe; color:#1d4ed8;">
+                Booked
+              </span>
             {% else %}
-              <span class="badge rounded-pill bg-secondary">{{ appt.appointment_status }}</span>
+              <span class="badge rounded-pill bg-secondary text-light">
+                {{ appt.appointment_status }}
+              </span>
             {% endif %}
           </td>
 
           <td>
             {% if appt.doctor %}
               <strong>{{ appt.doctor.first_name }} {{ appt.doctor.last_name or '' }}</strong>
-              <br><small class="text-muted">
+              <br>
+              <small class="text-muted">
                 ({{ appt.doctor.department.dept_name if appt.doctor.department else '—' }})
               </small>
             {% else %} — {% endif %}
@@ -89,7 +106,8 @@
           <td>
             {% if appt.patient %}
               <strong>{{ appt.patient.first_name }} {{ appt.patient.last_name or '' }}</strong>
-              <br><small class="text-muted">{{ appt.patient.contact_number or '' }}</small>
+              <br>
+              <small class="text-muted">{{ appt.patient.contact_number or '' }}</small>
             {% else %}
               —
             {% endif %}
@@ -119,27 +137,35 @@
 
 <style>
   .btn-outline-primary {
-    border-color: #6c63ff;
-    color: #4834d4;
+    border-color: #c7d2fe;
+    color: #4f46e5;
+    background-color: #f8fafc;
     transition: all 0.2s ease-in-out;
   }
 
   .btn-outline-primary:hover,
-  .btn-outline-primary:checked,
   .btn-outline-primary.active {
-    background: linear-gradient(90deg, #6c63ff, #4834d4);
+    background: linear-gradient(90deg, #a5b4fc, #818cf8);
+    color: white !important;
+    border-color: transparent;
+  }
+
+  .btn-check:checked + .btn-outline-primary {
+    background: linear-gradient(90deg, #a5b4fc, #818cf8);
     color: white !important;
     border-color: transparent;
   }
 
   .table-hover tbody tr:hover {
-    background-color: #f3f0ff !important;
-    transform: scale(1.01);
+    background-color: #f5f3ff !important;
+    transform: translateY(-1px);
   }
 
   select.form-select {
     border: 1px solid #d6d6f5;
     box-shadow: none;
+    border-radius: 999px;
+    padding-inline: 14px;
   }
 
   .sticky-top {

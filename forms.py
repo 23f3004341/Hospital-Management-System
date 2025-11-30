@@ -148,7 +148,7 @@ class AddDoctorForm(FlaskForm):
         validators=[DataRequired(), Length(min=1, max=80), Regexp(r'^[A-Za-z]+$', message="Only letters allowed.")]
     )
 
-    user_name = StringField('Username', render_kw={'readonly': True})
+    user_name = StringField('Username', validators=[Optional(), Length(min=3, max=25)])
     email_address = StringField('Email', validators=[DataRequired(), Email(), Length(max=150)])
     password = PasswordField(
         'Set Initial Password',

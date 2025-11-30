@@ -1,23 +1,36 @@
 {% extends "doctor_base.html" %}
 {% block doctor_content %}
+
 <div class="p-4" style="font-family:'Poppins',sans-serif;">
 
-  <!--Header and Search-->
+  <!-- Header -->
   <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
     <h3 class="fw-bold text-success mb-2">My Patients</h3>
-    <input type="text" id="searchInput" placeholder="Search patient by name or email"
-           class="form-control" style="max-width:300px;border-radius:10px;">
+
+    <!-- Search -->
+    <form method="GET" action="{{ url_for('main.doctor_patients') }}" class="d-flex">
+      <input type="text"
+             name="search"
+             value="{{ request.args.get('search', '') }}"
+             placeholder="Search patient by name or email"
+             class="form-control"
+             style="max-width:300px;border-radius:10px;">
+      <button class="btn btn-outline-success ms-2">Search</button>
+    </form>
   </div>
 
-  <!--Patient Cards-->
+  <!-- Patient List -->
   {% if patients %}
-  <div class="row g-3" id="patientsList">
+  <div class="row g-3">
     {% for p in patients %}
     <div class="col-md-6 col-lg-4">
       <div class="card shadow-sm border-0 patient-card h-100"
-           style="border-radius:14px;transition:all .3s ease;cursor:pointer;"
-           data-url="{{ url_for('main.doctor_patient_profile', patient_id=p.user_id) }}">
-        <div class="card-body">
+           style="border-radius:14px;transition:all .3s ease; cursor:pointer;">
+
+        <div class="card-body position-relative">
+          <a href="{{ url_for('main.doctor_patient_profile', patient_id=p.user_id) }}"
+             class="stretched-link text-reset text-decoration-none"></a>
+
           <div class="d-flex align-items-center">
             <div class="rounded-circle bg-success bg-opacity-10 d-flex align-items-center justify-content-center"
                  style="width:55px;height:55px;">
@@ -30,35 +43,19 @@
             </div>
           </div>
         </div>
+
         <div class="card-footer bg-light text-center border-0">
           <small class="text-success fw-semibold">View Full History →</small>
         </div>
+
       </div>
     </div>
     {% endfor %}
   </div>
+
   {% else %}
     <div class="alert alert-secondary text-center mt-4">No patients assigned yet.</div>
   {% endif %}
 </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll(".patient-card").forEach(card => {
-      card.addEventListener("click", () => {
-        const targetUrl = card.getAttribute("data-url");
-        if (targetUrl) window.location.href = targetUrl;
-      });
-    });
-  });
-
-  document.getElementById("searchInput").addEventListener("input", function() {
-    const query = this.value.toLowerCase();
-    document.querySelectorAll(".patient-card").forEach(card => {
-      const text = card.innerText.toLowerCase();
-      card.style.display = text.includes(query) ? "" : "none";
-    });
-  });
-</script>
 
 {% endblock %}

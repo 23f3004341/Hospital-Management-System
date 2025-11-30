@@ -1,43 +1,226 @@
 {% extends "admin_base.html" %}
 {% block content %}
 
-<div class="container py-5">
-    <div class="card shadow p-4" style="border-radius:15px;">
-        
-        <h3 class="text-center text-primary fw-bold">
-            Dr. {{ doctor.first_name }} {{ doctor.last_name }}
-        </h3>
-        <hr>
+<style>
+  body {
+    background: linear-gradient(135deg, #e9f3ff, #f8fbff);
+    font-family: "Inter", sans-serif;
+  }
 
-        <div class="row mb-2">
-            <div class="col-md-6"><strong>User ID:</strong> {{ doctor.user_id }}</div>
-            <div class="col-md-6"><strong>Username:</strong> @{{ doctor.user_name }}</div>
-        </div>
+  .profile-wrapper {
+    max-width: 900px;
+    margin: 40px auto;
+    animation: fadeIn 0.6s ease-in-out;
+  }
 
-        <div class="row mb-2">
-            <div class="col-md-6"><strong>Email:</strong> {{ doctor.email_address }}</div>
-            <div class="col-md-6"><strong>Contact:</strong> {{ doctor.contact_number or '—' }}</div>
-        </div>
+  .profile-card {
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+    padding: 28px 34px 30px;
+  }
 
-        <div class="row mb-2">
-            <div class="col-md-6"><strong>Department:</strong> {{ doctor.department.dept_name if doctor.department else '—' }}</div>
-            <div class="col-md-6"><strong>Qualification:</strong> {{ doctor.doctor_qualification or '—' }}</div>
-        </div>
 
-        <div class="row mb-2">
-            <div class="col-md-6"><strong>Experience:</strong> {{ doctor.doctor_experience or '0' }} years</div>
-        </div>
+  .avatar-circle {
+    width: 68px;
+    height: 68px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #bfdbfe, #a7f3d0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
 
-        <p><strong>Address:</strong> 
-            {{ doctor.address }}, {{ doctor.city }}, {{ doctor.state }}, 
-            {{ doctor.country }}, PIN {{ doctor.pincode }}
-        </p>
+  .avatar-circle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(182, 220, 255, 0.5);
+  transition: 0.25s;
+  }
 
-        <div class="text-center mt-4">
-            <a href="{{ url_for('main.admin_doctors') }}" class="btn btn-outline-primary">← Back to Dashboard</a>
-        </div>
+  .doc-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  }
 
+  .doc-title h3 {
+    margin: 0;
+    font-weight: 700;
+    color: #0d47a1;
+  }
+
+  .doc-title small {
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  .role-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #e0f2fe;
+    color: #1e7edf;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  .divider-line {
+    border-top: 1px solid #e2e8f0;
+    margin: 18px 0 22px;
+  }
+
+  .info-label {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #94a3b8;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .info-value {
+    font-size: 0.97rem;
+    color: #0f172a;
+    font-weight: 500;
+  }
+
+  .info-value.muted {
+    color: #64748b;
+    font-weight: 400;
+  }
+
+  .address-box {
+    font-weight: 400;
+  }
+
+  .back-btn {
+    margin-top: 26px;
+    border-radius: 999px;
+    padding: 10px 26px;
+    font-weight: 600;
+    font-size: 0.92rem;
+    border: 2px solid #c7d8ff;
+    background: #eef3ff;
+    color: #3755d8;
+    transition: all 0.25s ease;
+  }
+
+  .back-btn:hover {
+    background: #5a85e1;
+    border-color: #b8ccff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(175, 195, 255, 0.45);
+  }
+
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<div class="profile-wrapper">
+  <div class="profile-card">
+
+    <!-- Header with avatar + name -->
+    <div class="doc-header">
+      <div class="avatar-circle">
+        {{ (doctor.first_name[0] if doctor.first_name else 'D') | upper }}
+      </div>
+
+      <div class="doc-title">
+        <h3>Dr. {{ doctor.first_name }} {{ doctor.last_name or '' }}</h3>
+        <small>@{{ doctor.user_name }}</small><br>
+      </div>
     </div>
+
+    <div class="divider-line"></div>
+
+    <!-- Main info grid -->
+    <div class="row gy-3">
+      <div class="col-md-6">
+
+        <div class="mb-3">
+          <div class="info-label">User ID</div>
+          <div class="info-value">{{ doctor.user_id }}</div>
+        </div>
+
+        <div class="mb-3">
+          <div class="info-label">Email</div>
+          <div class="info-value">{{ doctor.email_address }}</div>
+        </div>
+
+        <div class="mb-3">
+          <div class="info-label">Department</div>
+          <div class="info-value">
+            {{ doctor.department.dept_name if doctor.department else '—' }}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="info-label">Experience</div>
+          <div class="info-value">
+            {{ doctor.doctor_experience or 0 }} years
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-md-6">
+
+        <div class="mb-3">
+          <div class="info-label">Contact</div>
+          <div class="info-value">
+            {{ doctor.contact_number or '—' }}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="info-label">Qualification</div>
+          <div class="info-value">
+            {{ doctor.doctor_qualification or '—' }}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="info-label">Address</div>
+          <div class="address-box">
+            {% if doctor.address %}
+              <div>{{ doctor.address }}</div>
+            {% else %}
+              <div class="info-value muted">No address on record.</div>
+            {% endif %}
+
+            {% if doctor.city or doctor.state or doctor.country or doctor.pincode %}
+              <div class="mt-1 text-muted small">
+                {% if doctor.city %}{{ doctor.city }}{% endif %}
+                {% if doctor.city and (doctor.state or doctor.country or doctor.pincode) %}, {% endif %}
+                {% if doctor.state %}{{ doctor.state }}{% endif %}
+                {% if doctor.state and (doctor.country or doctor.pincode) %}, {% endif %}
+                {% if doctor.country %}{{ doctor.country }}{% endif %}
+                {% if doctor.pincode %}, PIN {{ doctor.pincode }}{% endif %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="text-center">
+      <a href="{{ url_for('main.admin_doctors') }}"
+         class="btn btn-outline-primary back-btn">
+        ← Back to Dashboard
+      </a>
+    </div>
+
+  </div>
 </div>
 
 {% endblock %}

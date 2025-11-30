@@ -164,25 +164,30 @@
   <!-- Login Card -->
   <div class="login-container">
     <div class="login-card">
-        {% if wrong_credentials %}
-        <div class="alert alert-danger text-center" style="
+      {% if wrong_credentials %}
+      <div class="alert alert-danger text-center" style="
         border-radius: 12px;
         font-weight: 500;
         margin-bottom: 18px;
         background: #ffe6e6;
         border: 1px solid #ffb3b3;
-        color: #b30000;"
-        >⚠️ Wrong credentials. Please try again.
-        </div>
-        {% endif %}
+        color: #b30000;">
+        ⚠️ Wrong credentials. Please try again.
+      </div>
+      {% endif %}
 
       <form method="POST">
         {{ form.hidden_tag() }}
 
-        <!-- Visible role badge -->
-        <div class="mb-2">
-          <span class="role-badge" id="roleBadge">Role</span>
-        </div>
+        {# Role badge + hidden field, driven purely from backend preselected_role #}
+        {% if preselected_role %}
+          <div class="mb-2">
+            <span class="role-badge">
+              {{ preselected_role.capitalize() }}
+            </span>
+          </div>
+        {% endif %}
+        <input type="hidden" name="login_as" value="{{ preselected_role or '' }}">
 
         <!-- Email -->
         <div class="mb-3">
@@ -197,9 +202,6 @@
           <i class="bi bi-eye toggle-password" id="togglePassword"></i>
         </div>
 
-        <!-- Hidden role input that will be submitted -->
-        <input type="hidden" name="login_as" id="loginAsHidden">
-
         <!-- Remember me -->
         <div class="mb-3 form-check">
           {{ form.remember_me(class="form-check-input") }}
@@ -212,34 +214,19 @@
   </div>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    //Toggle password visibility
     const togglePassword = document.querySelector('#togglePassword');
     const passwordInput = document.querySelector('#password');
-    togglePassword.addEventListener('click', () => {
-      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordInput.setAttribute('type', type);
-      togglePassword.classList.toggle('bi-eye');
-      togglePassword.classList.toggle('bi-eye-slash');
-    });
 
-    (function setRoleFromQuery() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const preRole = (urlParams.get('role') || '').toLowerCase();
-      const allowed = ['admin','doctor','patient'];
-      const role = allowed.includes(preRole) ? preRole : '';
-      const hiddenRole = document.getElementById('loginAsHidden');
-      const badge = document.getElementById('roleBadge');
-
-      if (role) {
-        hiddenRole.value = role;
-        badge.textContent = role.charAt(0).toUpperCase() + role.slice(1);
-      } else {
-        badge.style.display = 'none';
-      }
-    })();
+    if (togglePassword && passwordInput) {
+      togglePassword.addEventListener('click', function () {
+        const isPassword = passwordInput.getAttribute('type') === 'password';
+        passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+        this.classList.toggle('bi-eye');
+        this.classList.toggle('bi-eye-slash');
+      });
+    }
   </script>
 </body>
 </html>

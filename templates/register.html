@@ -8,9 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      --card:#ffffff;
-    }
     body{
       margin:0;
       font-family:"Poppins",sans-serif;
@@ -24,7 +21,6 @@
       padding:20px 40px;
     }
     .brand {
-      font-family: "Roboto", serif;
       font-size:25px;
       color:#104aa3;
       font-weight:700;
@@ -40,23 +36,28 @@
     .back-btn:hover{background:#1e88e5;color:white}
     .container-main {display:flex;justify-content:center;padding:20px 40px 80px;}
     .card-wrap {width:100%;max-width:1100px;}
-    .form-title {text-align:center;font-size:20px;color:#3b4b64;margin-bottom:18px;font-weight:600;}
-    .form-card {background:var(--card);border-radius:14px;padding:26px;box-shadow: 0 18px 40px rgba(20,30,60,0.06);}
+    .form-title {text-align:center;font-size:20px;margin-bottom:18px;font-weight:600;}
+    .form-card {background:white;border-radius:14px;padding:26px;box-shadow: 0 18px 40px rgba(20,30,60,0.06);}
     .grid-row {display:grid;grid-template-columns: 1fr 1fr;gap:18px;}
     .form-label{font-weight:600;color:#0d47a1;margin-bottom:6px}
     .form-control{border-radius:10px;padding:10px 12px;border:1px solid #e6e9ee;}
     textarea.form-control{min-height:90px}
-    .small-error { color:#d23f3f; font-size:0.9rem; margin-top:6px; display:none; }
     .password-wrapper{position:relative}
     .toggle-password{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#7b8794;}
     .actions { display:flex; justify-content:space-between; align-items:center; margin-top:20px; flex-wrap:wrap; gap:10px;}
     .btn-submit{background: linear-gradient(90deg,#7a5cff,#5a8bff);color:white;border:none;padding:10px 22px;border-radius:10px;font-weight:600;}
     .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(80,110,255,0.12);}
-    [readonly]{background-color:#f3f3f3!important;}
+    [readonly]{
+      background-color:#f3f3f3!important;
+      color:#6c757d;
+      cursor:not-allowed;
+    }
     @media (max-width:900px){.grid-row{grid-template-columns:1fr;}}
   </style>
 </head>
+
 <body>
+
   <div class="topbar">
     <div class="brand">MediLife Hospital</div>
     <a href="{{ url_for('main.home') }}" class="back-btn">Back</a>
@@ -65,138 +66,226 @@
   <div class="container-main">
     <div class="card-wrap">
       <div class="form-title">Patient Registration Form</div>
-
       <div class="form-card">
+
         <form method="POST" novalidate>
           {{ form.hidden_tag() }}
 
+          <!-- Name -->
           <div class="grid-row mb-3">
-            <div><label class="form-label">First Name *</label>{{ form.first_name(class="form-control", placeholder="First name") }}</div>
-            <div><label class="form-label">Last Name</label>{{ form.last_name(class="form-control", placeholder="Last name (optional)") }}</div>
+            <div>
+              <label class="form-label" for="{{ form.first_name.id }}">First Name <span class="text-danger">*</span></label>
+              {{ form.first_name(class="form-control", required=True, placeholder="First name") }}
+            </div>
+            <div>
+              {{ form.last_name.label(class="form-label") }}
+              {{ form.last_name(class="form-control", placeholder="Last name (optional)") }}
+            </div>
           </div>
 
+          <!-- Username + Email -->
           <div class="grid-row mb-3">
-            <div><label class="form-label">Username (must be unique) *</label>{{ form.user_name(class="form-control", placeholder="Username for login") }}</div>
-            <div><label class="form-label">Email *</label>{{ form.email_address(class="form-control", placeholder="you@example.com") }}</div>
+            <div>
+              <label class="form-label" for="{{ form.user_name.id }}">Username (used to log in) <span class="text-danger">*</span></label>
+              {{ form.user_name(class="form-control", required=True, placeholder="Username for login") }}
+            </div>
+            <div>
+              <label class="form-label" for="{{ form.email_address.id }}">Email <span class="text-danger">*</span></label>
+              {{ form.email_address(class="form-control", required=True, placeholder="you@example.com") }}
+            </div>
           </div>
 
+          <!-- Password -->
           <div class="grid-row mb-3">
             <div class="password-wrapper">
-              <label class="form-label">Password *</label>
-              {{ form.password(class="form-control", placeholder="Create a password", id="password") }}
+              <label class="form-label" for="{{ form.password.id }}">Password <span class="text-danger">*</span></label>
+              {{ form.password(class="form-control", id="password", required=True, minlength="6", placeholder="Create password") }}
               <i class="bi bi-eye toggle-password" id="togglePassword"></i>
             </div>
             <div>
-              <label class="form-label">Confirm Password *</label>
-              {{ form.confirm_password(class="form-control", placeholder="Confirm password", id="confirm_password") }}
-              <div id="pwd-mismatch" class="small-error">Passwords do not match.</div>
+              <label class="form-label" for="{{ form.confirm_password.id }}">Confirm Password <span class="text-danger">*</span></label>
+              {{ form.confirm_password(class="form-control", required=True, placeholder="Re-enter password") }}
+            </div>
+          </div>
+
+          <!-- Gender + DOB -->
+          <div class="grid-row mb-3">
+            <div>
+              <label class="form-label" for="{{ form.gender.id }}">Gender <span class="text-danger">*</span></label>
+              {{ form.gender(class="form-control", required=True) }}
+            </div>
+            <div>
+              <label class="form-label" for="{{ form.dob.id }}">Date of Birth (YYYY-MM-DD) <span class="text-danger">*</span></label>
+              {{ form.dob(class="form-control", required=True) }}
+            </div>
+          </div>
+
+          <!-- Height & Weight (digits only via type+pattern) -->
+          <div class="grid-row mb-3">
+            <div>
+              <label class="form-label" for="{{ form.height.id }}">Height (cm) <span class="text-danger">*</span></label>
+              {{ form.height(
+                class="form-control",
+                type="text",
+                inputmode="decimal",
+                pattern="\\d{2,3}(\\.\\d{1,2})?",
+                required=True,
+                placeholder="Height in cm (ex: 162 or 162.5)",
+                oninput="
+                  this.value = this.value
+                    .replace(/[^0-9.]/g, '')
+                    .replace(/(\\..*)\\./g, '$1')
+                    .replace(/^0+(?=\\d)/, '');
+                "
+              ) }}
+            </div>
+
+            <div>
+              <label class="form-label" for="{{ form.weight.id }}">Weight (kg) <span class="text-danger">*</span></label>
+              {{ form.weight(
+                class="form-control",
+                type="text",
+                inputmode="decimal",
+                pattern="\\d{2,3}(\\.\\d{1,2})?",
+                required=True,
+                placeholder="Weight in kg (ex: 52 or 52.4)",
+                oninput="
+                  this.value = this.value
+                    .replace(/[^0-9.]/g, '')
+                    .replace(/(\\..*)\\./g, '$1')
+                    .replace(/^0+(?=\\d)/, '');
+                "
+              ) }}
+            </div>
+          
+          </div>
+
+          <!-- Phone -->
+          <div class="grid-row mb-3">
+            <div>
+              <label class="form-label" for="{{ form.contact_number.id }}">Contact Number <span class="text-danger">*</span></label>
+              {{ form.contact_number(
+                  class="form-control",
+                  type="tel",
+                  inputmode="numeric",
+                  pattern="\\d{10}",
+                  maxlength="10",
+                  required=True,
+                  placeholder="10-digit mobile number",
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
+              ) }}
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div class="mb-3">
+            <label class="form-label" for="{{ form.address.id }}">Address Line 1 <span class="text-danger">*</span></label>
+            {{ form.address(class="form-control", required=True, placeholder="Flat / House no, Street, Area") }}
+          </div>
+          <div class="mb-3">
+            {{ form.address_line2.label(class="form-label") }}
+            {{ form.address_line2(class="form-control", placeholder="Landmark, locality (optional)") }}
+          </div>
+
+          <!-- Pincode Auto-fill (digits only) -->
+          <div class="grid-row mb-3">
+            <div>
+              <label class="form-label" for="{{ form.pincode.id }}">Pincode <span class="text-danger">*</span></label>
+              {{ form.pincode(
+                  class="form-control",
+                  id="pincode",
+                  type="text",
+                  inputmode="numeric",
+                  pattern="\\d{6}",
+                  maxlength="6",
+                  required=True,
+                  placeholder="6-digit pincode",
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);"
+              ) }}
+            </div>
+            <div>
+              <label class="form-label" for="{{ form.city.id }}">City </label>
+              {{ form.city(class="form-control", placeholder="Autofilled", id="city", readonly=True) }}
             </div>
           </div>
 
           <div class="grid-row mb-3">
-            <div><label class="form-label">Gender *</label>{{ form.gender(class="form-control") }}</div>
-            <div><label class="form-label">Date of Birth *</label>{{ form.dob(class="form-control", placeholder="YYYY-MM-DD") }}</div>
+            <div>
+              <label class="form-label" for="{{ form.state.id }}">State </label>
+              {{ form.state(class="form-control", placeholder="Autofilled", id="state", readonly=True) }}
+            </div>
+            <div>
+              <label class="form-label" for="{{ form.country.id }}">Country </label>
+              {{ form.country(class="form-control", placeholder="Autofilled", id="country", readonly=True) }}
+            </div>
           </div>
 
-          <div class="grid-row mb-3">
-            <div><label class="form-label">Height (cm) *</label>{{ form.height(class="form-control", placeholder="e.g. 170", id="height") }}</div>
-            <div><label class="form-label">Weight (kg) *</label>{{ form.weight(class="form-control", placeholder="e.g. 65", id="weight") }}</div>
-          </div>
-
-          <div class="grid-row mb-3">
-            <div><label class="form-label">Marital Status *</label>{{ form.marital_status(class="form-control") }}</div>
-            <div><label class="form-label">Contact Number *</label>{{ form.contact_number(class="form-control", placeholder="10-digit contact number", id="contactNumber") }}</div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Address Line 1 *</label>{{ form.address(class="form-control", placeholder="Street, area...") }}
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Address Line 2</label>{{ form.address_line2(class="form-control", placeholder="Apartment, landmark (optional)") }}
-          </div>
-
-          <div class="grid-row mb-3">
-            <div><label class="form-label">Pincode *</label>{{ form.pincode(class="form-control", id="pincode", placeholder="6-digit pincode") }}</div>
-            <div><label class="form-label">City *</label>{{ form.city(class="form-control", id="city", readonly=True) }}</div>
-          </div>
-
-          <div class="grid-row mb-3">
-            <div><label class="form-label">State *</label>{{ form.state(class="form-control", id="state", readonly=True) }}</div>
-            <div><label class="form-label">Country *</label>{{ form.country(class="form-control", id="country", readonly=True) }}</div>
-          </div>
-
+          <!-- Emergency Contact -->
           <hr>
-          <div class="mb-2 fw-semibold" style="color:#3b4b64">Medical & Emergency</div>
-
-          <div class="mb-3">
-            <label class="form-label d-block">Taking any medications currently?</label>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="medications" value="yes" id="medYes">
-              <label class="form-check-label" for="medYes">Yes</label>
+          <div class="grid-row mb-3">
+            <div>
+              <label class="form-label" for="{{ form.emergency_contact_name.id }}">Emergency Contact Name <span class="text-danger">*</span></label>
+              {{ form.emergency_contact_name(class="form-control", required=True, placeholder="Full name") }}
             </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="medications" value="no" id="medNo" checked>
-              <label class="form-check-label" for="medNo">No</label>
+            <div>
+              <label class="form-label" for="{{ form.emergency_contact_relationship.id }}">Relationship <span class="text-danger">*</span></label>
+              {{ form.emergency_contact_relationship(class="form-control", required=True, placeholder="e.g., Mother, Brother") }}
             </div>
           </div>
 
-          <div class="grid-row mb-3">
-            <div><label class="form-label">Emergency Contact Name *</label>{{ form.emergency_contact_name(class="form-control", placeholder="Full name") }}</div>
-            <div><label class="form-label">Relationship *</label>{{ form.emergency_contact_relationship(class="form-control", placeholder="e.g. Parent") }}</div>
+          <div class="grid-row mb-4">
+            <div>
+              <label class="form-label" for="{{ form.emergency_contact_number.id }}">Emergency Contact Number <span class="text-danger">*</span></label>
+              {{ form.emergency_contact_number(
+                  class="form-control",
+                  type="tel",
+                  inputmode="numeric",
+                  pattern="\\d{10}",
+                  maxlength="10",
+                  required=True,
+                  placeholder="10-digit mobile number",
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
+              ) }}
+            </div>
           </div>
 
-          <div class="grid-row mb-3">
-            <div><label class="form-label">Emergency Contact Number *</label>{{ form.emergency_contact_number(class="form-control", placeholder="10-digit number", id="emergencyContact") }}</div>
-            <div></div>
-          </div>
-
+          <!-- Submit -->
           <div class="actions">
-            <div class="text-muted">By registering you agree to our terms.</div>
+            <div class="text-muted">By registering, you agree to our terms.</div>
             {{ form.submit(class="btn-submit") }}
           </div>
+
         </form>
       </div>
     </div>
   </div>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
   <script>
     const toggle=document.getElementById('togglePassword');
     const pwd=document.getElementById('password');
-    const confirmPwd=document.getElementById('confirm_password');
-    const mismatch=document.getElementById('pwd-mismatch');
+    toggle?.addEventListener('click',()=>{
+      pwd.type=pwd.type==='password'?'text':'password';
+      toggle.classList.toggle('bi-eye');
+      toggle.classList.toggle('bi-eye-slash');
+    });
 
-    if(toggle){toggle.addEventListener('click',()=>{pwd.type=pwd.type==='password'?'text':'password';toggle.classList.toggle('bi-eye');toggle.classList.toggle('bi-eye-slash');});}
-
-    function checkPwd(){mismatch.style.display=(pwd.value&&confirmPwd.value&&pwd.value!==confirmPwd.value)?'block':'none';}
-    pwd.addEventListener('input',checkPwd);confirmPwd.addEventListener('input',checkPwd);
-
-    // Numeric input restrictions
-    document.getElementById('contactNumber').addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,10);});
-    document.getElementById('emergencyContact').addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,10);});
-    document.getElementById('height').addEventListener('input',e=>{e.target.value=e.target.value.replace(/[^0-9.]/g,'');});
-    document.getElementById('weight').addEventListener('input',e=>{e.target.value=e.target.value.replace(/[^0-9.]/g,'');});
-
-    // Pincode autofill
-    const pincodeEl=document.getElementById('pincode');
-    pincodeEl.addEventListener('input',()=>{pincodeEl.value=pincodeEl.value.replace(/\D/g,'').slice(0,6);});
-    pincodeEl.addEventListener('blur',async()=>{
-      const val=pincodeEl.value.trim();
-      if(val.length===6){
-        try{
-          const res=await fetch(`https://api.postalpincode.in/pincode/${val}`);
-          const data=await res.json();
-          if(data[0].Status==="Success"){
-            const po=data[0].PostOffice[0];
-            document.getElementById('city').value=po.District||"";
-            document.getElementById('state').value=po.State||"";
-            document.getElementById('country').value=po.Country||"India";
-          }
-        }catch(err){console.log(err);}
-      }
+    document.getElementById("pincode")?.addEventListener("blur", async function(){
+      const pin=this.value.trim();
+      if(pin.length!==6) return;
+      try{
+        const res=await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+        const data=await res.json();
+        if(data[0]?.Status==="Success"){
+          const p=data[0].PostOffice[0];
+          document.getElementById("city").value=p.District||"";
+          document.getElementById("state").value=p.State||"";
+          document.getElementById("country").value=p.Country||"India";
+        }
+      }catch(e){}
     });
   </script>
-  
 
 </body>
 </html>

@@ -5,7 +5,7 @@
   body {
     margin: 0;
     height: 100vh;
-    background: linear-gradient(135deg, #e8f3ff, #f3f7ff);
+    background: linear-gradient(135deg, #bcdcff, #eef7ff, #c7e2ff);
     font-family: "Poppins", sans-serif;
     overflow: hidden;
   }
@@ -14,7 +14,7 @@
     display: none !important;
   }
 
-  /* Login/Register section */
+  /* Top Buttons */
   .top-right {
     position: absolute;
     top: 25px;
@@ -31,114 +31,98 @@
     border: 2px solid #8cc4ff;
     border-radius: 10px;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: 0.3s ease;
     padding: 7px 16px;
   }
-
   .dropdown .btn:hover {
-    background: #8cc4ff;
+    background: #87baff;
     color: white;
   }
 
   .btn-register {
-    background: linear-gradient(90deg, #3d7fff, #1d62d9);
+    background: linear-gradient(90deg,#6ea8ff,#4b79ff);
     color: white;
     border: none;
-    border-radius: 10px;
-    padding: 8px 20px;
+    border-radius: 14px;
+    padding: 9px 20px;
     font-weight: 600;
-    transition: all 0.25s ease;
+    transition: 0.25s ease;
+    text-decoration: none !important;
   }
-
   .btn-register:hover {
-    transform: translateY(-2px);
-    background: linear-gradient(90deg, #1d62d9, #004bb5);
+    transform: translateY(-3px);
+    background: linear-gradient(90deg,#4b79ff,#365adf);
   }
 
+  /* Hero Section */
   .hero {
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: -40px;
+  }
+
+  .care-text {
+    font-size: 0.9rem;
+    color: #3a4b63;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+    opacity: 0;
+    animation: fadeUp 1.4s ease-out forwards;
   }
 
   .medilife-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 4.2rem;
+    font-family: "DM Serif Display", serif;
+    font-size: 4.7rem;
     font-weight: 600;
-    color: #143a6f;
-    letter-spacing: 1px;
+    color: #2f5f97;
     opacity: 0;
-    animation: fadeUp 1.2s ease-out forwards;
+    animation: fadeUp 1.2s ease-out forwards, pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+
+  .tagline {
+    font-size: 1.1rem;
+    margin-top: 8px;
+    color: #445b77;
+    opacity: 0;
+    animation: fadeIn 1.5s ease-out forwards 0.5s;
   }
 
   @keyframes fadeUp {
     0% { opacity: 0; transform: translateY(25px); }
     100% { opacity: 1; transform: translateY(0); }
   }
-
-  .tagline {
-    font-size: 1.1rem;
-    color: #4a5c73;
-    margin-top: 10px;
-    opacity: 0;
-    animation: fadeIn 1.5s ease-out forwards 0.5s;
-  }
-
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
 
-  /* Departments */
-  .illustrations {
-    display: flex;
-    justify-content: center;
-    gap: 60px;
-    margin-top: 40px;
-  }
-
-  .illustrations img {
-    width: 300px;
-    filter: drop-shadow(0 10px 25px rgba(0,0,0,0.12));
-    animation: float 4s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%   { transform: translateY(0px); }
-    50%  { transform: translateY(-12px); }
-    100% { transform: translateY(0px); }
-  }
 </style>
 
-<!--Login/Register -->
+<!-- Top login/register -->
 <div class="top-right">
   <div class="dropdown">
-    <button class="btn dropdown-toggle" type="button" id="loginDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-      Login
-    </button>
+    <button class="btn dropdown-toggle" data-bs-toggle="dropdown">Login</button>
     <ul class="dropdown-menu dropdown-menu-end">
       <li><a class="dropdown-item" href="{{ url_for('main.login') }}?role=admin">Admin</a></li>
       <li><a class="dropdown-item" href="{{ url_for('main.login') }}?role=doctor">Doctor</a></li>
       <li><a class="dropdown-item" href="{{ url_for('main.login') }}?role=patient">Patient</a></li>
     </ul>
   </div>
-
   <a href="{{ url_for('main.register') }}" class="btn-register">Register as Patient</a>
 </div>
 
-<!--Welcome-->
+<!-- Center Content -->
 <div class="hero">
+  <p class="care-text">We care for you</p>
   <h1 class="medilife-title">Welcome to MediLife</h1>
   <p class="tagline">Your digital partner for modern healthcare management</p>
-
-  <!--Departments-->
-  <div class="illustrations">
-    <img src="https://cdn-icons-png.flaticon.com/512/2966/2966480.png" alt="Doctor Illustration">
-    <img src="https://cdn-icons-png.flaticon.com/512/706/706164.png" alt="Healthcare Illustration">
-  </div>
 </div>
 
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">

@@ -1,88 +1,225 @@
 {% extends "patient_base.html" %}
 {% block patient_content %}
 
-<div class="container py-5">
-  <div class="card shadow-sm p-4" style="border-radius: 16px; background: #fff;">
-    
-    <div class="d-flex justify-content-between align-items-center">
-      <h4 class="fw-bold mb-3" style="color: #6a4fb6;">Your Profile</h4>
+<style>
+  .profile-wrapper {
+    font-family: "Poppins", sans-serif;
+  }
+  .profile-card {
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 18px 40px rgba(20, 30, 60, 0.06);
+    border: none;
+  }
+  .profile-title {
+    color: #6a4fb6;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .profile-subtitle {
+    font-size: 0.85rem;
+    color: #8c9aa5;
+  }
+  .profile-section-title {
+    color: #6a4fb6;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+  .profile-label {
+    font-weight: 600;
+    color: #546e7a;
+    font-size: 0.9rem;
+  }
+  .profile-value {
+    color: #263238;
+    font-size: 0.9rem;
+  }
+  .profile-row {
+    margin-bottom: 0.3rem;
+  }
+  .profile-divider {
+    border-color: #ece7ff;
+    opacity: 1;
+  }
+  .btn-profile-edit {
+    background: linear-gradient(90deg,#7a5cff,#5a8bff);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 999px;
+    padding: 8px 18px;
+    box-shadow: 0 10px 24px rgba(90, 139, 255, 0.25);
+  }
+  .btn-profile-edit:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 12px 28px rgba(90, 139, 255, 0.3);
+  }
+  .btn-back-dashboard {
+    border-radius: 999px;
+    border: 1px solid #d0c2ff;
+    color: #6a4fb6;
+    background: #f7f2ff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding-inline: 22px;
+  }
+  .btn-back-dashboard:hover {
+    background: #e9ddff;
+    color: #5b43aa;
+  }
+</style>
 
-      <a href="{{ url_for('main.patient_edit_profile') }}" class="btn btn-primary">
+<div class="container py-5 profile-wrapper">
+  <div class="card profile-card p-4 p-md-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h4 class="profile-title mb-1">Your Profile</h4>
+        <p class="profile-subtitle mb-0">Personal and medical details</p>
+      </div>
+      <a href="{{ url_for('main.patient_edit_profile') }}" class="btn btn-profile-edit">
         Edit Profile
       </a>
     </div>
 
-    <hr>
+    <hr class="profile-divider">
 
     <!-- Personal Info -->
-    <div class="row mb-3">
-      <div class="col-md-6"><strong>Name:</strong> {{ patient.first_name }} {{ patient.last_name }}</div>
-      <div class="col-md-6"><strong>Email:</strong> {{ patient.email_address }}</div>
-    </div>
+    <div class="mb-3">
+      <div class="row profile-row">
+        <div class="col-md-6">
+          <span class="profile-label">Name:</span>
+          <span class="profile-value"> {{ patient.first_name }} {{ patient.last_name }}</span>
+        </div>
+        <div class="col-md-6">
+          <span class="profile-label">Email:</span>
+          <span class="profile-value"> {{ patient.email_address }}</span>
+        </div>
+      </div>
 
-    <div class="row mb-3">
-      <div class="col-md-6"><strong>Gender:</strong> {{ patient.gender or '—' }}</div>
-      <div class="col-md-6"><strong>Date of Birth:</strong> 
-        {{ patient.dob.strftime('%d %b %Y') if patient.dob else '—' }}
+      <div class="row profile-row">
+        <div class="col-md-6">
+          <span class="profile-label">Gender:</span>
+          <span class="profile-value"> {{ patient.gender or '—' }}</span>
+        </div>
+        <div class="col-md-6">
+          <span class="profile-label">Date of Birth:</span>
+          <span class="profile-value">
+            {{ patient.dob.strftime('%d %b %Y') if patient.dob else '—' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="row profile-row">
+        <div class="col-md-6">
+          <span class="profile-label">Contact:</span>
+          <span class="profile-value"> {{ patient.contact_number or '—' }}</span>
+        </div>
+        <div class="col-md-6">
+          <span class="profile-label">Nationality:</span>
+          <span class="profile-value"> {{ patient.nationality or '—' }}</span>
+        </div>
       </div>
     </div>
 
-    <div class="row mb-3">
-      <div class="col-md-6"><strong>Contact:</strong> {{ patient.contact_number or '—' }}</div>
-      <div class="col-md-6"><strong>Nationality:</strong> {{ patient.nationality or '—' }}</div>
-    </div>
-
-    <hr>
+    <hr class="profile-divider">
 
     <!-- Physical Details -->
-    <h6 class="fw-bold" style="color:#6a4fb6;">Physical Details</h6>
-    <div class="row mb-3">
-      <div class="col-md-6"><strong>Height:</strong> {{ patient.height or '—' }} cm</div>
-      <div class="col-md-6"><strong>Weight:</strong> {{ patient.weight or '—' }} kg</div>
+    <h6 class="profile-section-title">Physical Details</h6>
+    <div class="mb-3">
+      <div class="row profile-row">
+        <div class="col-md-6">
+          <span class="profile-label">Height:</span>
+          <span class="profile-value"> {{ patient.height or '—' }} cm</span>
+        </div>
+        <div class="col-md-6">
+          <span class="profile-label">Weight:</span>
+          <span class="profile-value"> {{ patient.weight or '—' }} kg</span>
+        </div>
+      </div>
+
+      <div class="row profile-row">
+        <div class="col-md-6">
+          <span class="profile-label">Marital Status:</span>
+          <span class="profile-value"> {{ patient.marital_status or '—' }}</span>
+        </div>
+        <div class="col-md-6">
+          <span class="profile-label">Medications:</span>
+          <span class="profile-value"> {{ patient.medications or '—' }}</span>
+        </div>
+      </div>
     </div>
 
-    <div class="row mb-3">
-      <div class="col-md-6"><strong>Marital Status:</strong> {{ patient.marital_status or '—' }}</div>
-      <div class="col-md-6"><strong>Medications:</strong> {{ patient.medications or '—' }}</div>
-    </div>
-
-    <hr>
+    <hr class="profile-divider">
 
     <!-- Address details -->
-    <h6 class="fw-bold" style="color:#6a4fb6;">Address</h6>
-    <div class="row mb-3">
-      <div class="col-md-12"><strong>Address Line 1:</strong> {{ patient.address or '—' }}</div>
+    <h6 class="profile-section-title">Address</h6>
+    <div class="mb-3">
+      <div class="row profile-row">
+        <div class="col-md-12">
+          <span class="profile-label">Address Line 1:</span>
+          <span class="profile-value"> {{ patient.address or '—' }}</span>
+        </div>
+      </div>
+
+      <div class="row profile-row">
+        <div class="col-md-12">
+          <span class="profile-label">Address Line 2:</span>
+          <span class="profile-value"> {{ patient.address_line2 or '—' }}</span>
+        </div>
+      </div>
+
+      <div class="row profile-row">
+        <div class="col-md-4">
+          <span class="profile-label">City:</span>
+          <span class="profile-value"> {{ patient.city or '—' }}</span>
+        </div>
+        <div class="col-md-4">
+          <span class="profile-label">State:</span>
+          <span class="profile-value"> {{ patient.state or '—' }}</span>
+        </div>
+        <div class="col-md-4">
+          <span class="profile-label">Country:</span>
+          <span class="profile-value"> {{ patient.country or '—' }}</span>
+        </div>
+      </div>
+
+      <div class="row profile-row">
+        <div class="col-md-4">
+          <span class="profile-label">Pincode:</span>
+          <span class="profile-value"> {{ patient.pincode or '—' }}</span>
+        </div>
+      </div>
     </div>
 
-    <div class="row mb-3">
-      <div class="col-md-12"><strong>Address Line 2:</strong> {{ patient.address_line2 or '—' }}</div>
-    </div>
-
-    <div class="row mb-3">
-      <div class="col-md-4"><strong>City:</strong> {{ patient.city or '—' }}</div>
-      <div class="col-md-4"><strong>State:</strong> {{ patient.state or '—' }}</div>
-      <div class="col-md-4"><strong>Country:</strong> {{ patient.country or '—' }}</div>
-    </div>
-
-    <div class="row mb-3">
-      <div class="col-md-4"><strong>Pincode:</strong> {{ patient.pincode or '—' }}</div>
-    </div>
-
-    <hr>
+    <hr class="profile-divider">
 
     <!-- Emergency Cont -->
-    <h6 class="fw-bold" style="color:#6a4fb6;">Emergency Contact</h6>
-    <div class="row mb-3">
-      <div class="col-md-4"><strong>Name:</strong> {{ patient.emergency_name or '—' }}</div>
-      <div class="col-md-4"><strong>Relation:</strong> {{ patient.emergency_relation or '—' }}</div>
-      <div class="col-md-4"><strong>Contact:</strong> {{ patient.emergency_contact or '—' }}</div>
+    <h6 class="profile-section-title">Emergency Contact</h6>
+    <div class="mb-3">
+      <div class="row profile-row">
+        <div class="col-md-4">
+          <span class="profile-label">Name:</span>
+          <span class="profile-value"> {{ patient.emergency_name or '—' }}</span>
+        </div>
+        <div class="col-md-4">
+          <span class="profile-label">Relation:</span>
+          <span class="profile-value"> {{ patient.emergency_relation or '—' }}</span>
+        </div>
+        <div class="col-md-4">
+          <span class="profile-label">Contact:</span>
+          <span class="profile-value"> {{ patient.emergency_contact or '—' }}</span>
+        </div>
+      </div>
     </div>
 
-    <hr>
+    <hr class="profile-divider">
 
     <!-- Back button -->
-    <div class="text-center mt-4">
-      <a href="{{ url_for('main.patient_dashboard') }}" class="btn btn-outline-secondary">
+    <div class="text-center mt-3">
+      <a href="{{ url_for('main.patient_dashboard') }}" class="btn btn-back-dashboard">
         ← Back to Dashboard
       </a>
     </div>

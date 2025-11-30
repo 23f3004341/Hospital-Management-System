@@ -1,13 +1,92 @@
 {% extends "patient_base.html" %}
 {% block patient_content %}
 
-<div class="container py-5">
-  <div class="card shadow-sm p-4" style="border-radius: 16px; background: #fff;">
+<style>
+  .edit-profile-wrapper {
+    font-family: "Poppins", sans-serif;
+  }
+  .edit-profile-card {
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 18px 40px rgba(20, 30, 60, 0.06);
+    border: none;
+  }
+  .edit-title {
+    font-weight: 600;
+    color: #5f4dc9;
+    letter-spacing: .5px;
+  }
+  .sub-info {
+    font-size: 0.84rem;
+    color: #8c9aa5;
+    margin-top: -6px;
+  }
 
-    <h4 class="fw-bold mb-3" style="color: #6a4fb6;">Edit Your Profile</h4>
+  .form-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #344767;
+  }
+
+  .form-control {
+    border-radius: 10px;
+    height: 42px;
+    border: 1px solid #d9d9df;
+    transition: .2s;
+  }
+  .form-control:focus {
+    border-color: #7b60ff;
+    box-shadow: 0 0 0 0.15rem rgba(123,96,255,0.25);
+  }
+
+  .form-control[readonly],
+  .form-control[readonly]:focus {
+    background-color: #f3f3f3 !important;
+    color: #6c757d !important;
+    border-color: #e0e0e0 !important;
+    box-shadow: none !important;
+    cursor: not-allowed;
+  }
+
+  .btn-primary-custom {
+    background: linear-gradient(90deg,#7a5cff,#5a8bff);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 50px;
+    padding: 10px 26px;
+  }
+  .btn-primary-custom:hover {
+    opacity: .95;
+  }
+
+  .btn-grey {
+    background: #f7f2ff;
+    border-radius: 50px;
+    border: 1px solid #d9ccff;
+    color: #6a4fb6;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .btn-grey:hover {
+    background: #e9ddff;
+  }
+
+  hr {
+    opacity: .25;
+  }
+</style>
+
+<div class="container py-5 edit-profile-wrapper">
+  <div class="card edit-profile-card p-4 p-md-5">
+
+    <h4 class="edit-title">Edit Profile</h4>
+    <p class="sub-info">Update only the information you wish to modify.</p>
+
     <hr>
 
-    <form method="POST" novalidate>
+    <form method="POST" novalidate class="needs-validation">
       {{ form.hidden_tag() }}
 
       {% for field, errors in form.errors.items() %}
@@ -17,112 +96,199 @@
       </div>
       {% endfor %}
 
-      <!-- Name -->
       <div class="row mb-3">
-        <div class="col-md-6">{{ form.first_name.label }} {{ form.first_name(class="form-control") }}</div>
-        <div class="col-md-6">{{ form.last_name.label }} {{ form.last_name(class="form-control") }}</div>
+        <div class="col-md-6">
+          <label class="form-label">First Name *</label>
+          {{ form.first_name(class="form-control", required=True) }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Last Name</label>
+          {{ form.last_name(class="form-control") }}
+        </div>
       </div>
 
-      <!-- Username and Email -->
       <div class="row mb-3">
-        <div class="col-md-6">{{ form.user_name.label }} {{ form.user_name(class="form-control") }}</div>
-        <div class="col-md-6">{{ form.email_address.label }} {{ form.email_address(class="form-control") }}</div>
+        <div class="col-md-6">
+          <label class="form-label">Username</label>
+          {{ form.user_name(class="form-control", readonly=True) }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Email *</label>
+          {{ form.email_address(class="form-control", required=True) }}
+        </div>
       </div>
 
-      <!-- Gender and dob -->
       <div class="row mb-3">
-        <div class="col-md-6">{{ form.gender.label }} {{ form.gender(class="form-control") }}</div>
-        <div class="col-md-6">{{ form.dob.label }} {{ form.dob(class="form-control") }}</div>
+        <div class="col-md-6">
+          <label class="form-label">Gender *</label>
+          {{ form.gender(class="form-control", required=True) }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Date of Birth *</label>
+          {{ form.dob(class="form-control") }}
+        </div>
       </div>
 
-      <!-- Height and Weight -->
       <div class="row mb-3">
-        <div class="col-md-6">{{ form.height.label }} {{ form.height(class="form-control") }}</div>
-        <div class="col-md-6">{{ form.weight.label }} {{ form.weight(class="form-control") }}</div>
+        <div class="col-md-6">
+          <label class="form-label">Height (cm)</label>
+          {{ form.height(
+              class="form-control",
+              type="text",
+              inputmode="decimal",
+              pattern="\\d{1,3}(\\.\\d{1,2})?",
+              placeholder="e.g., 162 or 162.5",
+              oninput="
+                this.value = this.value
+                  .replace(/[^0-9.]/g, '')
+                  .replace(/(\\..*)\\./g, '$1');
+              "
+          ) }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Weight (kg)</label>
+          {{ form.weight(
+              class="form-control",
+              type="text",
+              inputmode="decimal",
+              pattern="\\d{1,3}(\\.\\d{1,2})?",
+              placeholder="e.g., 55 or 55.5",
+              oninput="
+                this.value = this.value
+                  .replace(/[^0-9.]/g, '')
+                  .replace(/(\\..*)\\./g, '$1');
+              "
+          ) }}
+        </div>
       </div>
 
-      <!-- Marital Status and contact number -->
       <div class="row mb-3">
-        <div class="col-md-6">{{ form.marital_status.label }} {{ form.marital_status(class="form-control") }}</div>
-        <div class="col-md-6">{{ form.contact_number.label }} {{ form.contact_number(class="form-control") }}</div>
+        <div class="col-md-6">
+          <label class="form-label">Marital Status</label>
+          {{ form.marital_status(class="form-control") }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Contact Number *</label>
+          {{ form.contact_number(
+              class="form-control",
+              type="text",
+              inputmode="numeric",
+              pattern="\\d{10}",
+              maxlength="10",
+              oninput="this.value = this.value.replace(/[^0-9]/g,'').slice(0,10);"
+          ) }}
+        </div>
       </div>
-
-      <!-- Nationality -->
-      <div class="mb-3">{{ form.nationality.label }} {{ form.nationality(class="form-control") }}</div>
-
-      <!-- Address -->
-      <div class="mb-3">{{ form.address.label }} {{ form.address(class="form-control") }}</div>
-      <div class="mb-3">{{ form.address_line2.label }} {{ form.address_line2(class="form-control") }}</div>
-
-      <div class="row mb-3">
-        <div class="col-md-3">{{ form.pincode.label }} {{ form.pincode(class="form-control") }}</div>
-        <div class="col-md-3">{{ form.city.label }} {{ form.city(class="form-control") }}</div>
-        <div class="col-md-3">{{ form.state.label }} {{ form.state(class="form-control") }}</div>
-        <div class="col-md-3">{{ form.country.label }} {{ form.country(class="form-control") }}</div>
-      </div>
-
-      <!-- Medical Information -->
-      <hr>
-      <h6 class="text-muted mb-2">Medical & Emergency Info</h6>
 
       <div class="mb-3">
-        {{ form.medications.label }} {{ form.medications(class="form-control") }}
+        <label class="form-label">Nationality</label>
+        {{ form.nationality(class="form-control") }}
       </div>
 
-      <!-- Emergency Contact -->
+      <div class="mb-3">
+        <label class="form-label">Address Line 1 *</label>
+        {{ form.address(class="form-control") }}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Address Line 2</label>
+        {{ form.address_line2(class="form-control") }}
+      </div>
+
       <div class="row mb-3">
-        <div class="col-md-4">{{ form.emergency_contact_name.label }} {{ form.emergency_contact_name(class="form-control") }}</div>
-        <div class="col-md-4">{{ form.emergency_contact_relationship.label }} {{ form.emergency_contact_relationship(class="form-control") }}</div>
-        <div class="col-md-4">{{ form.emergency_contact_number.label }} {{ form.emergency_contact_number(class="form-control") }}</div>
+        <div class="col-md-3">
+          <label class="form-label">Pincode *</label>
+          {{ form.pincode(
+              class="form-control",
+              id="pincode",
+              type="text",
+              inputmode="numeric",
+              pattern="\\d{6}",
+              maxlength="6",
+              oninput="this.value = this.value.replace(/[^0-9]/g,'').slice(0,6);"
+          ) }}
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">City</label>
+          {{ form.city(class="form-control", readonly=True, id="city") }}
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">State</label>
+          {{ form.state(class="form-control", readonly=True, id="state") }}
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Country</label>
+          {{ form.country(class="form-control", readonly=True, id="country") }}
+        </div>
       </div>
 
-      <!-- Save button -->
+      <hr>
+
+      <h6 class="text-muted mb-2">Medical & Emergency Info</h6>
+
+      <!-- Medications -->
+      <div class="mb-3">
+        <label class="form-label d-block">Taking any medications currently?</label>
+        <div class="d-flex align-items-center gap-4">
+          {% for subfield in form.medications %}
+          <div class="form-check form-check-inline">
+            {{ subfield(class="form-check-input") }}
+            <label class="form-check-label" for="{{ subfield.id }}">{{ subfield.label.text }}</label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Emergency Contact Name *</label>
+          {{ form.emergency_contact_name(class="form-control") }}
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Relationship *</label>
+          {{ form.emergency_contact_relationship(class="form-control") }}
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Emergency Contact Number *</label>
+          {{ form.emergency_contact_number(
+              class="form-control",
+              type="text",
+              inputmode="numeric",
+              pattern="\\d{10}",
+              maxlength="10",
+              oninput="this.value = this.value.replace(/[^0-9]/g,'').slice(0,10);"
+          ) }}
+        </div>
+      </div>
+
       <div class="text-end">
-        <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+        <button type="submit" class="btn btn-primary-custom">Save Changes</button>
       </div>
     </form>
 
     <div class="text-center mt-4">
-      <a href="{{ url_for('main.patient_self_profile') }}" class="btn btn-outline-secondary">← Back to Profile</a>
+      <a href="{{ url_for('main.patient_self_profile') }}" class="btn btn-grey">
+        ← Back to Profile
+      </a>
     </div>
-
   </div>
 </div>
 
-<!-- Autofill City, State, Country from Pincode -->
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const pincodeField = document.querySelector('input[name="pincode"]');
-  const cityField = document.querySelector('input[name="city"]');
-  const stateField = document.querySelector('input[name="state"]');
-  const countryField = document.querySelector('input[name="country"]');
+document.getElementById("pincode")?.addEventListener("blur", async function() {
+  const pincode = this.value.trim();
+  if (pincode.length !== 6) return;
 
-  async function fetchPincodeDetails(pincode) {
-    if (pincode.length === 6) {
-      try {
-        const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
-        const data = await response.json();
-        if (data[0].Status === "Success") {
-          const post = data[0].PostOffice[0];
-          cityField.value = post.Block || post.District || "";
-          stateField.value = post.State || "";
-          countryField.value = post.Country || "India";
-        } else {
-          cityField.value = "";
-          stateField.value = "";
-          countryField.value = "";
-        }
-      } catch (error) {
-        console.error("Pincode Fetch Error:", error);
-      }
+  try {
+    const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+    const data = await res.json();
+
+    if (data[0]?.Status === "Success") {
+      const p = data[0].PostOffice[0];
+      document.getElementById("city").value = p.District || "";
+      document.getElementById("state").value = p.State || "";
+      document.getElementById("country").value = p.Country || "India";
     }
-  }
-
-  if (pincodeField) {
-    pincodeField.addEventListener("input", () => {
-      fetchPincodeDetails(pincodeField.value.trim());
-    });
-  }
+  } catch(e) { }
 });
 </script>
 

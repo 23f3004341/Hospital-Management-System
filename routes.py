@@ -129,7 +129,6 @@ def login():
     return render_template('login.html', form=form, preselected_role=preselected_role)
 
 
-
 # Logout route
 @main.route('/logout')
 @login_required
@@ -293,15 +292,20 @@ def add_doctor():
         raw_contact = (form.contact_number.data or "").strip()
         contact_digits = re.sub(r'\D', '', raw_contact)
 
-        first = (form.first_name.data or "").strip().lower()
-        suffix = (contact_digits[-2:] if len(contact_digits) >= 2 else '01')
-        base_username = f"{first}_{suffix}" if first else f"doc_{suffix}"
-        username_to_use = base_username
-
+        entered_username = (form.user_name.data or "").strip().lower()
+        if entered_username:
+            username_to_use = entered_username
+        else:
+            first = (form.first_name.data or "").strip().lower()
+            suffix = (contact_digits[-2:] if len(contact_digits) >= 2 else '01')
+            base_username = f"{first}_{suffix}" if first else f"doc_{suffix}"
+            username_to_use = base_username
+            
         counter = 0
         while User.query.filter(db.func.lower(User.user_name) == username_to_use.lower()).first():
             counter += 1
-            username_to_use = f"{base_username}_{counter}"
+            username_to_use = f"{username_to_use}_{counter}"
+
 
         email_norm = (form.email_address.data or "").strip().lower()
         by_email = User.query.filter(db.func.lower(User.email_address) == email_norm).first()
@@ -678,13 +682,14 @@ def doctor_appointments():
     )
 
 
-# Doctor Section (Patients Page)
 @main.route('/doctor/patients')
 @login_required
 @role_required('doctor')
 def doctor_patients():
     doctor_id = current_user.user_id
+    search_query = request.args.get("search", "").strip().lower()
 
+    # Fetch distinct patient IDs assigned to this doctor
     assigned_patient_ids = (
         db.session.query(Appointment.patient_id)
         .filter(Appointment.doctor_id == doctor_id)
@@ -695,15 +700,27 @@ def doctor_patients():
 
     patient_ids = [pid[0] for pid in assigned_patient_ids if pid[0] is not None]
 
-    assigned_patients = []
+    patients = []
     if patient_ids:
-        assigned_patients = (
-            User.query.filter(User.user_id.in_(patient_ids))
+        patients = (
+            User.query
+            .filter(User.user_id.in_(patient_ids))
             .filter(User.user_role == 'patient')
-            .all()
         )
 
-    return render_template('doctor_patients.html', patients=assigned_patients)
+        if search_query:
+            patients = patients.filter(
+                db.or_(
+                    db.func.lower(User.first_name).like(search_query + '%'),
+                    db.func.lower(User.last_name).like(search_query + '%'),
+                    db.func.lower(User.email_address).like(search_query + '%')
+                )
+            )
+
+        patients = patients.order_by(User.first_name).all()
+
+    return render_template('doctor_patients.html', patients=patients)
+
 
 
 # Doctor Section (Patient Profile Page)

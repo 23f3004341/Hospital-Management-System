@@ -20,117 +20,135 @@
 
   .table-container {
     background: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-    padding: 25px;
+    border-radius: 24px;
+    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.10);
+    padding: 24px 26px;
     overflow-x: auto;
   }
 
   table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 14px;
+    border-spacing: 0 12px;
   }
 
   thead tr {
-    background: #e3f2fd;
-    color: #0d47a1;
+    background: transparent;
+    color: #64748b;
     font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
 
   thead th {
-    padding: 16px 20px;
-    text-align: left;
+    padding: 8px 18px;
     border: none;
-    font-size: 0.95rem;
   }
 
   tbody tr {
     background: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    border-radius: 14px;
     transition: all 0.25s ease;
   }
 
   tbody tr:hover {
-    transform: scale(1.01);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.10);
   }
 
-  /* Blacklisted users */
   tbody tr.blacklisted {
-    background: #fdecea;
-    color: #b71c1c;
+    background: #fef2f2;
+    box-shadow: none;
+    border: 1px solid #fecaca;
   }
 
   tbody tr.blacklisted:hover {
-    background: #f8d7da;
+    transform: none;
+    box-shadow: 0 4px 12px rgba(248, 113, 113, 0.18);
   }
 
   tbody td {
-    padding: 20px;
+    padding: 16px 18px;
     vertical-align: middle;
-    border-top: 1px solid #f1f5f9;
-    font-size: 0.96rem;
-    color: inherit;
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    font-size: 0.95rem;
   }
 
-  .btn-action {
-    border: none;
-    border-radius: 10px;
-    padding: 8px 16px;
+  tbody tr td:first-child {
+    border-top-left-radius: 14px;
+    border-bottom-left-radius: 14px;
+  }
+  tbody tr td:last-child {
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+  }
+
+  .doctor-name {
     font-weight: 600;
-    letter-spacing: 0.3px;
-    transition: all 0.25s ease;
-    cursor: pointer;
+    color: #0f172a;
   }
 
-  .btn-blacklist {
-    background: #fde7e7;
-    color: #c62828;
+  .doctor-username {
+    font-size: 0.8rem;
+    color: #64748b;
   }
 
-  .btn-blacklist:hover {
-    background: #ffcdd2;
-    transform: scale(1.05);
+  .badge-dept {
+    color: #5076df;
+    font-weight: 600;
+  }
+
+  .badge-qual {
+    color: #166534;
+    font-weight: 600;
+  }
+
+  .btn-table {
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .btn-view {
+    border-color: #0ea5e9;
+    color: #0284c7;
+  }
+  .btn-view:hover {
+    background-color: #e0f2fe;
+    color: #0369a1;
   }
 
   .btn-update {
-    background: #e3f2fd;
-    color: #1565c0;
-    margin-left: 8px;
+    border-color: #22c55e;
+    color: #15803d;
   }
-
   .btn-update:hover {
-    background: #bbdefb;
-    transform: scale(1.05);
+    background-color: #dcfce7;
+    color: #166534;
   }
 
-  .add-doctor-btn {
-    background: linear-gradient(45deg, #42a5f5, #1e88e5);
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-weight: 600;
-    padding: 10px 18px;
-    float: right;
-    transition: all 0.3s ease;
+  .btn-blacklist {
+    border-color: #f97373;
+    color: #b91c1c;
   }
-
-  .add-doctor-btn:hover {
-    transform: scale(1.05);
-    background: linear-gradient(45deg, #1e88e5, #1565c0);
+  .btn-blacklist:hover {
+    background-color: #fee2e2;
+    color: #b91c1c;
   }
 
   .search-row {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
 
   .form-control {
-    border-radius: 10px;
+    border-radius: 999px;
     border: 1px solid #d0d7de;
-    padding: 10px 12px;
+    padding: 9px 14px;
     transition: all 0.25s ease;
+    font-size: 0.9rem;
   }
 
   .form-control:focus {
@@ -138,22 +156,46 @@
     box-shadow: 0 0 6px rgba(66, 165, 245, 0.3);
   }
 
+  .btn-outline-primary,
+  .btn-outline-secondary {
+    border-radius: 999px;
+    font-size: 0.85rem;
+    padding-inline: 16px;
+  }
+
+  .add-doctor-btn {
+    background: #487bd2;
+    border: none;
+    border-radius: 999px;
+    color: #fff;
+    font-weight: 600;
+    padding: 8px 18px;
+    transition: all 0.25s ease;
+  }
+
+  .add-doctor-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px rgba(37, 99, 235, 0.36);
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 </style>
 
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h3>Manage Doctors</h3>
-    <a href="{{ url_for('main.add_doctor') }}" class="btn add-doctor-btn">+ Add Doctor</a>
+    <a href="{{ url_for('main.add_doctor') }}" class="add-doctor-btn">+ Add Doctor</a>
   </div>
 
   <div class="table-container">
+    <!-- Search -->
     <form method="GET" action="{{ url_for('main.admin_doctors') }}" class="row search-row mb-3">
       <div class="col-md-6 mb-2 mb-md-0">
-        <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="Search doctors..." />
+        <input type="text" name="search" value="{{ search }}" class="form-control"
+               placeholder="Search doctors by name or department..." />
       </div>
       <div class="col-md-3 mb-2 mb-md-0">
         <select name="filter" class="form-control">
@@ -167,13 +209,12 @@
       </div>
     </form>
 
-    <!--Table-->
+    <!-- Table -->
     <table>
       <thead>
         <tr>
           <th>No.</th>
-          <th>Username</th>
-          <th>Name</th>
+          <th>Doctor</th>
           <th>Department</th>
           <th>Qualification</th>
           <th>Contact</th>
@@ -185,40 +226,69 @@
         {% for doctor in doctors %}
         <tr class="{% if doctor.is_blacklisted %}blacklisted{% endif %}">
           <td>{{ loop.index }}</td>
-          <td><span class="fw-semibold text-primary">@{{ doctor.user_name }}</span></td>
-          <td>{{ doctor.first_name }} {{ doctor.last_name }}</td>
-          <td>{{ doctor.department.dept_name if doctor.department else 'N/A' }}</td>
-          <td>{{ doctor.doctor_qualification or '—' }}</td>
+
+          <!-- Doctor name + username -->
+          <td>
+            <div class="doctor-name">
+              {{ doctor.first_name }} {{ doctor.last_name or '' }}
+            </div>
+            <div class="doctor-username">
+              @{{ doctor.user_name }}
+            </div>
+          </td>
+
+          <!-- Department -->
+          <td>
+            {% if doctor.department %}
+              <span class="badge-dept">{{ doctor.department.dept_name }}</span>
+            {% else %}
+              —
+            {% endif %}
+          </td>
+
+          <!-- Qualification -->
+          <td>
+            {% if doctor.doctor_qualification %}
+              <span class="badge-qual">{{ doctor.doctor_qualification }}</span>
+            {% else %}
+              —
+            {% endif %}
+          </td>
+
+          <!-- Contact -->
           <td>{{ doctor.contact_number or '—' }}</td>
+
+          <!-- Experience -->
           <td>{{ doctor.doctor_experience }} yrs</td>
-          <td style="white-space: nowrap;">
-  
-             <a href="{{ url_for('main.view_doctor_profile', doctor_id=doctor.user_id) }}"
-             class="btn btn-outline-info btn-sm"
-             style="padding: 2px 10px; font-size: 0.83rem; margin-right: 5px;">
-             View
-            </a>
-            
-             <a href="{{ url_for('main.manage_doctor', id=doctor.user_id) }}"
-             class="btn btn-outline-primary btn-sm"
-             style="padding: 2px 10px; font-size: 0.83rem; margin-right: 5px;">
-            Update
+
+          <!-- Actions -->
+          <td class="text-center" style="white-space: nowrap;">
+            <!-- View Profile -->
+            <a href="{{ url_for('main.view_doctor_profile', doctor_id=doctor.user_id) }}"
+               class="btn btn-outline-info btn-table btn-view">
+              View
             </a>
 
-             <form method="POST" action="{{ url_for('main.toggle_blacklist', user_id=doctor.user_id) }}" 
-             style="display:inline;">
-             <button type="submit" 
-             class="btn btn-outline-danger btn-sm"
-             style="padding: 2px 10px; font-size: 0.83rem;">
-             {% if doctor.is_blacklisted %}Unblock{% else %}Blacklist{% endif %}
-            </button>
-        </form>
-    </td>
+            <!-- Update -->
+            <a href="{{ url_for('main.manage_doctor', id=doctor.user_id) }}"
+               class="btn btn-outline-success btn-table btn-update ms-1">
+              Update
+            </a>
 
+            <!-- Blacklist/Unblock -->
+            <form method="POST"
+                  action="{{ url_for('main.toggle_blacklist', user_id=doctor.user_id) }}"
+                  style="display:inline;">
+              <button type="submit"
+                      class="btn btn-outline-danger btn-table btn-blacklist ms-1">
+                {% if doctor.is_blacklisted %}Unblock{% else %}Blacklist{% endif %}
+              </button>
+            </form>
+          </td>
         </tr>
         {% else %}
         <tr>
-          <td colspan="8" class="text-center text-muted py-4">No doctors found.</td>
+          <td colspan="7" class="text-center text-muted py-4">No doctors found.</td>
         </tr>
         {% endfor %}
       </tbody>
